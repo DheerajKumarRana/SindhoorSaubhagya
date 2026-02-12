@@ -1,0 +1,357 @@
+.section {
+    padding: 4rem 10%;
+    background-color: #fff;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.titleHighlight {
+    color: #E31E24;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    line-height: 1.5;
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Common Card Styles */
+.card {
+    background-color: #FFF5F5;
+    border-radius: 24px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Gallery Card (Top) */
+.galleryCard {
+    grid-column: span 2;
+    padding: 1rem 2rem;
+    align-items: center;
+    text-align: center;
+    min-height: 500px;
+}
+
+/* Gallery Container */
+.galleryContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 480px;
+    /* Increased for taller portrait cards */
+    width: 60%;
+    /* Adjusted width to ensure mask visibility */
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    overflow: hidden;
+    /* Confine bubbles */
+    /* Fade/Blur effect on edges using mask */
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+/* Profile Dummy Cards */
+/* Profile Dummy Cards */
+.profileCard {
+    width: 160px;
+    /* Smaller inactive */
+    height: 220px;
+    background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+    border-radius: 40px;
+    /* Increased rounding */
+    position: absolute;
+    transition: all 0.5s ease-in-out;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.profileCard.active {
+    width: 260px;
+    /* Reduced active size */
+    height: 360px;
+    padding: 0;
+    z-index: 10;
+    transform: translateX(0) scale(1);
+    background: #E31E24;
+    box-shadow: 0 20px 40px rgba(227, 30, 36, 0.3);
+    opacity: 1;
+}
+
+.profileCard.prev {
+    transform: translateX(-180px) scale(0.85);
+    /* Adjust spacing */
+    z-index: 5;
+    background: #FF8085;
+}
+
+.profileCard.next {
+    transform: translateX(180px) scale(0.85);
+    z-index: 5;
+    background: #FF8085;
+}
+
+/* Inner content of profile card to match screenshot (Avatar + Lines) */
+.profileInner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarPlaceholder {
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    /* Squircle */
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.avatarCircle {
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+    left: 25px;
+}
+
+.avatarBody {
+    width: 70px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 20px 20px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+}
+
+
+.linesPlaceholder {
+    width: 60%;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    margin-bottom: 6px;
+}
+
+.linesPlaceholder.short {
+    width: 40%;
+}
+
+.galleryText h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.galleryText p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Bubbles Animation */
+.bubble {
+    position: absolute;
+    background-color: #E2E8F0;
+    /* Greyish */
+    border-radius: 50%;
+    opacity: 0;
+    animation: bubblePop 4s infinite;
+    z-index: 0;
+    /* Behind cards */
+    pointer-events: none;
+}
+
+@keyframes bubblePop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Stats Small Cards */
+.statCard {
+    padding: 2.5rem;
+    align-items: flex-start;
+}
+
+.iconCircle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #E31E24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.statValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.statDesc {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Big Bottom Card */
+/* Big Bottom Card */
+.bigCard {
+    grid-column: span 2;
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    text-align: left;
+    gap: 2rem;
+}
+
+.bigCardContent {
+    width: 100%;
+}
+
+.bigTitle {
+    font-size: 6rem;
+    /* Increased size */
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.bigDesc {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+}
+
+.bookBtn {
+    background-color: #E31E24;
+    color: white;
+    width: 100%;
+    padding: 1.25rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+}
+
+.bookBtn:hover {
+    background-color: #c91b1f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+
+    .section {
+        padding: 4rem 5%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .galleryCard,
+    .bigCard {
+        grid-column: span 1;
+        padding: 2rem;
+    }
+
+    .galleryContainer {
+        height: 350px;
+        /* Increased for portrait */
+        width: 100%;
+        mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    }
+
+    .profileCard {
+        width: 160px;
+        height: 220px;
+    }
+
+    .profileCard.active {
+        width: 220px;
+        height: 300px;
+    }
+
+    .profileCard.prev {
+        transform: translateX(-140px) scale(0.85);
+    }
+
+    .profileCard.next {
+        transform: translateX(140px) scale(0.85);
+    }
+
+    .bigCard {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .bigTitle {
+        font-size: 4rem;
+    }
+
+    .bookBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}

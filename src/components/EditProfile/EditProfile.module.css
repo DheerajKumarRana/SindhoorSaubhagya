@@ -1,0 +1,212 @@
+/* Edit Profile Styles */
+.container {
+    padding: 30px;
+}
+
+.header {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.closeBtn {
+    background: #E31E24;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Form Sections */
+.section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+}
+
+.photoColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.profileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.avatarPlaceholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.changePhotoBtn {
+    background-color: #E31E24;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.changePhotoBtn:hover {
+    background-color: #c41920;
+}
+
+.fieldsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.input,
+.select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input:focus,
+.select:focus {
+    border-color: #E31E24;
+}
+
+.dateInputWrapper {
+    position: relative;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    height: 100%;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Radio button custom style mimicking the design */
+.radioInput {
+    accent-color: #E31E24;
+    width: 18px;
+    height: 18px;
+}
+
+
+/* Footer Actions */
+.footerActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.cancelBtn {
+    padding: 10px 25px;
+    border: 1px solid #E31E24;
+    border-radius: 30px;
+    background: white;
+    color: #E31E24;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.saveBtn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 30px;
+    background: #E31E24;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(227, 30, 36, 0.3);
+}
+
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .fieldsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .photoColumn {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .profileImage {
+        width: 100px;
+        height: 100px;
+    }
+}

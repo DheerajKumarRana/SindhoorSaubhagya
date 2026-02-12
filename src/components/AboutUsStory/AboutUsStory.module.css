@@ -1,0 +1,233 @@
+.section {
+    position: relative;
+    padding: 80px 5%;
+    background-color: #fff;
+    min-height: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: var(--font-poppins);
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 700px;
+    /* Specific height to manage absolute positioning */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imageContainer {
+    position: relative;
+    width: 400px;
+    height: 550px;
+    border-radius: 20px 20px 20px 20px;
+    /* Arch shape */
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.mainImage {
+    object-fit: cover;
+}
+
+/* Card Styles */
+.card {
+    position: absolute;
+    background: #FFF5F5;
+    /* Pinkish bg matching screenshot */
+    padding: 24px;
+    border-radius: 20px;
+    width: 330px;
+    /* Slightly smaller to fit */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.9);
+    /* Visible border as requested */
+    opacity: 0.9;
+}
+
+.iconCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #E31E24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardContent h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.cardContent p {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Positioning - Adjusted to overlap the image */
+/* Container width is 1200px, Image container is ~400px wide in center */
+/* Center is at 600px. Image spans 400px to 800px approx */
+
+.cardTopLeft {
+    top: 100px;
+    left: 11%;
+    /* Push inwards */
+    z-index: 30;
+}
+
+.cardTopRight {
+    top: 12px;
+    right: 11%;
+    /* Push inwards */
+    z-index: 29;
+}
+
+.cardBottomLeft {
+    bottom: 9px;
+    left: 11%;
+    /* Push inwards */
+    z-index: 30;
+}
+
+.cardBottomRight {
+    bottom: 150px;
+    right: 11%;
+    /* Push inwards */
+    z-index: 29;
+}
+
+
+/* Animations */
+.animatedIcon {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    animation: floatFade 4s ease-in-out infinite;
+}
+
+.anim1 {
+    animation-delay: 0s;
+    left: 10%;
+    top: 20%;
+}
+
+.anim2 {
+    animation-delay: 2s;
+    right: 15%;
+    top: 15%;
+}
+
+.anim3 {
+    animation-delay: 1s;
+    left: 15%;
+    bottom: 25%;
+}
+
+.anim4 {
+    animation-delay: 3s;
+    right: 10%;
+    bottom: 30%;
+}
+
+@keyframes floatFade {
+    0% {
+        transform: translateY(10px) scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-20px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .section {
+        padding: 40px 15px;
+        min-height: auto;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 15px;
+        height: auto;
+        justify-content: space-between;
+    }
+
+    /* Reorder items: Image in middle (order 2), Top cards (order 1), Bottom cards (order 3) */
+
+    .imageContainer {
+        position: relative;
+        order: 2;
+        width: 100%;
+        max-width: 100%;
+        height: 300px;
+        border-radius: 20px;
+        margin: 20px 0;
+        box-shadow: none;
+    }
+
+    /* Cards */
+    .card {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: calc(50% - 8px);
+        /* 2 per row */
+        padding: 15px;
+        min-height: 140px;
+        border-radius: 15px;
+        opacity: 0.85;
+        /* Slight transparency */
+        background: rgba(255, 245, 245, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.9);
+    }
+
+    .cardTopLeft,
+    .cardTopRight {
+        order: 1;
+    }
+
+    .cardBottomLeft,
+    .cardBottomRight {
+        order: 3;
+    }
+
+    .cardContent h3 {
+        font-size: 0.9rem;
+    }
+
+    .cardContent p {
+        font-size: 0.7rem;
+    }
+
+    .iconCircle {
+        width: 32px;
+        height: 32px;
+    }
+}

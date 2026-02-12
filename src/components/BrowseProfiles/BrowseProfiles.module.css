@@ -1,0 +1,153 @@
+.section {
+    padding: 80px 5%;
+    background-color: #f8f9fc;
+    /* Light background from screenshot */
+    text-align: center;
+}
+
+.heading {
+    font-family: var(--font-poppins);
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #000;
+}
+
+.tabsContainer {
+    display: inline-flex;
+    /* Pill shape needs inline-flex or flex with width fit-content */
+    background-color: #fff;
+    border-radius: 50px;
+    padding: 8px;
+    /* Padding for the pill container */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tab {
+    border: none;
+    background: transparent;
+    padding: 12px 32px;
+    font-size: 18px;
+    font-family: var(--font-poppins);
+    color: #666;
+    cursor: pointer;
+    border-radius: 40px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.tab:hover {
+    color: #D32F2F;
+}
+
+.active {
+    color: #D32F2F;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.15);
+    /* Soft pink shadow */
+    background-color: #fff;
+    /* Ensure it stands out if container is same color, but here simplistic */
+}
+
+/* Specific style from screenshot: looks like active tab has a subtle pinkish glow or background? 
+   The screenshot shows 'Marital Status' selected with a white background and drop shadow, 
+   while the container itself is white. Wait, the container looks white.
+   Let's refine: The container is white. The *active* tab is also white but with a shadow? 
+   Or maybe just the text is pink? 
+   Let's check the screenshot again.
+   The active tab 'Marital Status' has a distinct shadow and maybe a very subtle pink bg or just white.
+   Let's stick to white bg for active + shadow + pink text.
+*/
+
+.contentGrid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.item {
+    font-size: 16px;
+    color: #666;
+    font-family: var(--font-geist-sans);
+    cursor: pointer;
+    transition: color 0.2s;
+    white-space: nowrap;
+    /* Prevent items from breaking awkwardly */
+}
+
+.item:hover {
+    color: #D32F2F;
+    text-decoration: underline;
+}
+
+.separator {
+    color: #DEDEDE;
+    /* Light gray separator as seen in screenshot */
+    font-size: 14px;
+    margin: 0 5px;
+    /* Adjust spacing around separator */
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 40px 16px;
+    }
+
+    .heading {
+        font-size: 28px;
+        margin-bottom: 24px;
+    }
+
+    .tabsContainer {
+        border-radius: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        /* Ensure tabs wrap if needed */
+        justify-content: center;
+        /* Center tabs */
+        width: 100%;
+        padding: 4px;
+        gap: 8px;
+        /* Add gap between tabs */
+        overflow-x: visible;
+        /* Remove scroll behavior */
+    }
+
+    .tab {
+        padding: 8px 16px;
+        font-size: 14px;
+        flex-grow: 0;
+        /* Let them take natural width */
+    }
+
+    .contentGrid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        /* Consistent gap */
+        justify-content: center;
+        padding: 0 10px;
+    }
+
+    .item {
+        font-size: 14px;
+        padding: 8px 16px;
+        background-color: #fff;
+        border-radius: 20px;
+        border: 1px solid #eee;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        /* Chip style */
+        color: #555;
+    }
+
+    .separator {
+        display: none;
+        /* Hide vertical separator on mobile */
+    }
+}

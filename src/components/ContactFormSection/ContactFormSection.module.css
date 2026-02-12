@@ -1,0 +1,195 @@
+.section {
+    width: 100%;
+    padding: 80px 5%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    font-family: var(--font-poppins);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 60px;
+    justify-content: space-between;
+}
+
+/* Left - Form Side */
+.formSide {
+    flex: 1.2;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.formTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #1A1A1A;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.input,
+.textarea,
+.select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: #F5F5F5;
+    /* Light gray input bg */
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    font-family: inherit;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+    color: #999;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.submitButton {
+    width: 100%;
+    background-color: #E31E24;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+    text-transform: capitalize;
+}
+
+.submitButton:hover {
+    background-color: #c41920;
+}
+
+/* Right - Contact Info Side */
+.infoSide {
+    flex: 0.8;
+    background-color: #FFF5F5;
+    /* Light pink bg */
+    border-radius: 20px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.infoTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #1A1A1A;
+}
+
+.infoItem {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.iconCircle {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    background-color: #fff;
+    border-radius: 50%;
+    /* Circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Optional shadow if needed */
+}
+
+/* We can use SVG components or colored icons inside */
+
+.infoContent h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1A1A1A;
+}
+
+.infoContent p,
+.infoContent a {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    text-decoration: none;
+    display: block;
+}
+
+.separator {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Very light separator */
+    margin: 30px 0;
+}
+
+.operatingTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #1A1A1A;
+}
+
+.operatingText {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .formSide,
+    .infoSide {
+        width: 100%;
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 40px 20px;
+    }
+
+    .formSide {
+        padding: 25px;
+    }
+
+    .infoSide {
+        padding: 25px;
+    }
+}

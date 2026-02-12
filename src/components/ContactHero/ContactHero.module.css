@@ -1,0 +1,114 @@
+.section {
+    width: 100%;
+    min-height: 500px;
+    background-color: #FFF5F5;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-poppins);
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1440px;
+    /* Full width for hero usually */
+    margin: 0 auto;
+    align-items: center;
+}
+
+/* Left Content Side */
+.contentSide {
+    flex: 1;
+    padding: 80px 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    z-index: 2;
+}
+
+.title {
+    font-size: 5rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: #E31E24;
+}
+
+.titleSpan {
+    color: #F88D91;
+    /* Lighter pink/red */
+    font-weight: 500;
+    font-size: 3rem;
+    vertical-align: middle;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: #000;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+/* Right Image Side */
+.imageSide {
+    flex: 2.2;
+    position: relative;
+    height: 600px;
+    /* Adjust based on design */
+    /* Clip path or similar if needed for slanted edges, but standard split for now */
+}
+
+.heroImage {
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .title {
+        font-size: 4rem;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        flex-direction: column-reverse;
+        /* Image on top, Text bottom */
+        height: auto;
+    }
+
+    .container {
+        flex-direction: column-reverse;
+    }
+
+    .imageSide {
+        width: 100%;
+        height: 400px;
+        flex: none;
+    }
+
+    .contentSide {
+        width: 100%;
+        padding: 40px 20px;
+        text-align: center;
+        flex: none;
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .titleSpan {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+}

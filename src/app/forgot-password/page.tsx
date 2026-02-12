@@ -1,0 +1,72 @@
+"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import styles from './forgot-password.module.css';
+import { supabase } from '@/lib/supabase';
+
+export default function ForgotPassword() {
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setMessage(null);
+
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/auth/callback?next=/update-password`,
+            });
+
+            if (error) throw error;
+
+            setMessage("Check your email for the password reset link.");
+        } catch (err: any) {
+            setError(err.message || "Failed to send reset email.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.card}>
+                <h1 className={styles.title}>Forgot Password?</h1>
+                <p className={styles.subtitle}>
+                    Enter your email address and we'll send you a link to reset your password.
+                </p>
+
+                {message && <div className={styles.successMessage}>{message}</div>}
+                {error && <p style={{ color: 'red', marginBottom: '20px' }}>{error}</p>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className={styles.formGroup}>
+                        <label className={styles.label} htmlFor="email">Email Address</label>
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            className={styles.input}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className={styles.button} disabled={loading}>
+                        {loading ? 'Sending...' : 'Send Reset Link'}
+                    </button>
+
+                    <Link href="/" className={styles.backLink}>
+                        <ArrowLeft size={16} /> Back to Home
+                    </Link>
+                </form>
+            </div>
+        </div>
+    );
+}

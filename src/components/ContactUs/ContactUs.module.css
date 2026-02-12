@@ -1,0 +1,420 @@
+.section {
+    position: relative;
+    padding: 0rem 0;
+    width: 100%;
+    min-height: 600px;
+    /* Give it some height to show animations */
+    background-color: #F8F9FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.titleContainer {
+    text-align: center;
+    z-index: 10;
+    margin-top: 4rem;
+    /* Increased spacing */
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.titleHighlight {
+    color: #E31E24;
+}
+
+/* Marquee / Reviews Layer */
+.marqueeLayer {
+    position: absolute;
+    top: 55%;
+    /* Moved down slightly */
+    transform: translateY(-50%);
+    width: 100%;
+    z-index: 1;
+    opacity: 1;
+    /* Unfaded as requested */
+    pointer-events: none;
+}
+
+/* Form Container Layer */
+.formLayer {
+    position: relative;
+    z-index: 20;
+    /* Above everything */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0rem;
+    margin-bottom: 1rem;
+}
+
+/* Rainbow Background */
+.rainbowContainer {
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.rainbowLayer {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.rainbow2 {
+    width: 600px;
+    height: 350px;
+    opacity: 0.9;
+    bottom: 30px;
+}
+
+.rainbow3 {
+    width: 750px;
+    height: 400px;
+    opacity: 0.7;
+    bottom: 0;
+}
+
+.rainbow4 {
+    width: 500px;
+    height: 300px;
+    opacity: 0.9;
+    bottom: 80px;
+    z-index: 6;
+}
+
+
+/* Registration Form Card - Copied from Hero */
+.formCard {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    /* Reduced padding */
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    /* Reduced width */
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    /* Reduced gap */
+    position: relative;
+    z-index: 20;
+    text-align: left;
+}
+
+/* Single Rainbow Background */
+.rainbowSingle {
+    position: absolute;
+    bottom: -50px;
+    /* Adjust positioning to frame the form */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 890px;
+    /* Large enough to arch over */
+    height: 516px;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.formTitle {
+    font-size: 23px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.formGroup {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.formInput,
+.formSelect {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    /* Matches Hero Input padding */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    outline: none;
+    height: 54px;
+    /* Explicit height to match */
+    color: #333;
+}
+
+.formSelect {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.formInput:focus,
+.formSelect:focus {
+    border-color: #E31E24;
+    /* Sindoor Red */
+    box-shadow: 0 0 0 4px rgba(255, 62, 108, 0.1);
+}
+
+.inputLabel {
+    position: absolute;
+    left: 12px;
+    background: white;
+    padding: 0 6px;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 10;
+    /* Positioning handled inline in JSX for top:-8px */
+}
+
+.btnRegister {
+    width: 100%;
+    padding: 1rem;
+    background: #E31E24;
+    /* Standard Red */
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.btnRegister:hover {
+    background: #e62e5c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 62, 108, 0.3);
+}
+
+/* Animated Elements */
+.animatedIcon {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    /* Start hidden */
+}
+
+/* Specific Animations */
+/* We will create a few variations of animation so they don't all look the same */
+
+/* Animation 1: Float + Rotate + Fade In/Out */
+.anim1 {
+    animation: floatFade1 6s infinite ease-in-out;
+}
+
+.anim2 {
+    animation: floatFade2 8s infinite ease-in-out;
+    animation-delay: 1s;
+}
+
+.anim3 {
+    animation: floatFade3 7s infinite ease-in-out;
+    animation-delay: 2s;
+}
+
+.anim4 {
+    animation: floatFade1 9s infinite ease-in-out;
+    animation-delay: 0.5s;
+}
+
+.anim5 {
+    animation: floatFade2 10s infinite ease-in-out;
+    animation-delay: 1.5s;
+}
+
+/* Keyframes */
+
+@keyframes floatFade1 {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) rotate(0deg) scale(0.8);
+    }
+
+    20% {
+        opacity: 1;
+        /* Appear */
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        /* Disappear */
+        transform: translate(30px, -30px) rotate(45deg) scale(1.1);
+    }
+}
+
+@keyframes floatFade2 {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) rotate(0deg) scale(0.8);
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-30px, -40px) rotate(-45deg) scale(1.1);
+    }
+}
+
+@keyframes floatFade3 {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(20px, 20px) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(40px, 40px) scale(0.5);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .formCard {
+        max-width: 331px !important;
+    }
+
+    .section {
+        min-height: 400px;
+        /* padding: 4rem 0; */
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .formLayer {
+        padding: 0 1rem;
+    }
+}
+
+/* Marquee / Reviews Layer */
+.marqueeLayer {
+    position: absolute;
+    top: 77%;
+    transform: translateY(-50%);
+    width: 100%;
+    z-index: 1;
+    /* Low z-index to stay behind */
+    opacity: 1;
+    /* Faded background effect */
+    pointer-events: none;
+}
+
+.marqueeContainer {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    animation: scrollLeft 60s linear infinite;
+}
+
+@keyframes scrollLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.testimonialCard {
+    background-color: #FFF5F5;
+    border-radius: 16px;
+    padding: 2rem;
+    width: 450px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid rgba(227, 30, 36, 0.05);
+    opacity: 1 !important;
+    /* Force full opacity */
+}
+
+.stars {
+    color: #E31E24;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.testimonialText {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+}
+
+.authorSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #eee;
+    object-fit: cover;
+}
+
+.authorInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.testimonialAuthor {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #000;
+}
+
+.testimonialRole {
+    font-size: 0.8rem;
+    color: #666;
+}

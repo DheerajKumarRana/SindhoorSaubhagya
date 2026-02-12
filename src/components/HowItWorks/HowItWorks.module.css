@@ -1,0 +1,117 @@
+.section {
+    padding: 4rem 10%;
+    background-color: var(--white);
+    color: var(--text-dark);
+    overflow: hidden;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.highlight {
+    color: var(--primary-red);
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+.stepsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.stepRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+}
+
+.stepRow.reverse {
+    flex-direction: row-reverse;
+}
+
+.textContent {
+    flex: 1;
+    max-width: 450px;
+}
+
+.iconContainer {
+    display: inline-flex;
+    padding: 12px;
+    border-radius: 50%;
+    background-color: #ffebee;
+    /* Light red/pink bg */
+    color: var(--primary-red);
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
+}
+
+.stepTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.stepDescription {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-light);
+}
+
+.imageContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.mockupImage {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+    transition: transform 0.3s ease;
+}
+
+.mockupImage:hover {
+    transform: translateY(-5px);
+}
+
+/* Connective dotted line element (optional visualization of flow) */
+/* For now keeping it simple as per screenshot which seems clean */
+
+@media (max-width: 900px) {
+
+    .stepRow,
+    .stepRow.reverse {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .textContent {
+        order: 1;
+        /* Layout: Image first or Text first on mobile? Screenshot shows text above image usually or image above text. Let's stack Text then Image for readability. */
+        max-width: 100%;
+    }
+
+    .imageContainer {
+        order: 2;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+}

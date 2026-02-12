@@ -1,0 +1,282 @@
+.section {
+    padding: 4rem 10%;
+    background-color: #F8F9FA;
+    /* Light background from image */
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 66px;
+    /* Figma spec */
+    line-height: 74.8px;
+    font-weight: 600;
+    /* SemiBold */
+    color: #000;
+    margin-bottom: 0.5rem;
+}
+
+.titleHighlight {
+    color: #E31E24;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Grid Layout */
+.grid {
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+}
+
+/* Card Styling */
+/* Card Styling */
+.card {
+    background-color: #fff;
+    border-radius: 20px;
+    /* Figma spec */
+    padding: 28px 32px;
+    /* Top/Bottom: 28px, Left/Right: 32px */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    max-width: 315px;
+    /* Figma spec */
+    gap: 0;
+    /* managing gap manually or via flex */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.popularBadge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background-color: white;
+    border: 1px solid #E31E24;
+    color: #E31E24;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.planName {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.priceContainer {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.currency {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.period {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.description {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+    min-height: 40px;
+    /* Align buttons */
+}
+
+.button {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.buttonOutline {
+    background: transparent;
+    border: 1px solid #E31E24;
+    /* Should check if outline is grey or red. Image shows red for Basic/Ultimate? Let's assume red based on consistency */
+    color: #E31E24;
+    border: 1px solid #ffcccc;
+    /* Light red border for unselected */
+}
+
+.buttonOutline:hover {
+    background-color: #fff5f5;
+}
+
+.buttonFilled {
+    background-color: #E31E24;
+    color: white;
+    border: 1px solid #E31E24;
+}
+
+.buttonFilled:hover {
+    background-color: #c91b1f;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px dashed #eee;
+    margin-bottom: 1.5rem;
+}
+
+.featuresList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+.checkIcon {
+    color: #666;
+    /* Or checkmark color from image */
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.checkIconPurple {
+    color: #a855f7;
+    /* Purple check for Premium? Layout looks simpler. using grey checks for standard */
+}
+
+/* Money Back Banner */
+.banner {
+    color: #fff;
+    background-color: #e31e24;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    max-width: 995px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+}
+
+.bannerBadge {
+    width: 80px;
+    height: 80px;
+
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* Styles for the 'seal' look - simplified */
+}
+
+/* Styles for the 'seal' look - simplified */
+
+
+.bannerText {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.bannerTitle {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 36px;
+    text-align: left;
+}
+
+.bannerDesc {
+    font-size: 18px;
+    opacity: 0.9;
+    max-width: 500px;
+    line-height: 28px;
+    text-align: left;
+}
+
+.link {
+    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .section {
+        padding: 4rem 5%;
+    }
+
+    .grid {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+    }
+
+
+    .banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 26px;
+        /* Smaller for mobile, 66px is too big */
+        line-height: 1.2;
+    }
+}
