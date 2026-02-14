@@ -70,8 +70,7 @@ const Hero = () => {
         // Step 6: Bio & Photo
         aboutMe: '',
         phone: '',
-        otp: '',
-        horoscope: ''
+        otp: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -165,7 +164,6 @@ const Hero = () => {
                         family_location: formData.familyLocation,
                         about_me: formData.aboutMe,
                         phone: formData.phone,
-                        horoscope: formData.horoscope,
                     },
                 },
             });
@@ -355,14 +353,10 @@ const Hero = () => {
                                         <option value="partial">Anshik Manglik</option>
                                         <option value="dont_know">Don't Know</option>
                                     </select>
-                                    <input
-                                        type="text"
-                                        name="horoscope"
-                                        placeholder="Horoscope / Gothra (Opt)"
-                                        className={styles.formInput}
-                                        value={formData.horoscope}
-                                        onChange={handleChange}
-                                    />
+                                    <div className={styles.uploadBtn}>
+                                        <input type="file" id="horoscope" style={{ display: 'none' }} />
+                                        <label htmlFor="horoscope" style={{ fontSize: '0.9rem', cursor: 'pointer', fontWeight: 500 }}>Upload Horoscope (Opt)</label>
+                                    </div>
                                 </div>
                             </div>
                         )}
