@@ -22,6 +22,9 @@ add column if not exists sisters_total integer default 0,
 add column if not exists sisters_married integer default 0,
 add column if not exists native_city text,
 add column if not exists family_location text,
+add column if not exists profile_for text,
+add column if not exists looking_for text,
+add column if not exists annual_income numeric,
 add column if not exists about_me text;
 
 -- Update the handle_new_user trigger to map metadata correctly
@@ -58,6 +61,8 @@ begin
     sisters_married,
     native_city,
     family_location,
+    profile_for,
+    looking_for,
     about_me,
     phone,
     status
@@ -96,6 +101,8 @@ begin
     (new.raw_user_meta_data->>'sisters_married')::integer,
     new.raw_user_meta_data->>'native_city',
     new.raw_user_meta_data->>'family_location',
+    new.raw_user_meta_data->>'profile_for',
+    new.raw_user_meta_data->>'looking_for',
     new.raw_user_meta_data->>'about_me',
     new.raw_user_meta_data->>'phone',
     'pending'
