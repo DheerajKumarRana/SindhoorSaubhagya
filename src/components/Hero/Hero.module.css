@@ -112,19 +112,28 @@
 /* Registration Form Card */
 .formCard {
     background-color: var(--white);
-    padding: 2.5rem;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 32px;
+    border-radius: 24px;
+    width: 420px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     color: var(--text-dark);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.formCard:hover {
+    transform: translateY(-5px);
 }
 
 .formTitle {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
     margin-bottom: 2rem;
-    color: #333;
+    color: #000;
+    line-height: 150%;
+    letter-spacing: -0.04em;
 }
 
 .formGroup {
@@ -138,26 +147,37 @@
     left: 15px;
     background-color: white;
     padding: 0 5px;
-    font-size: 0.8rem;
-    color: #666;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #666666;
+    z-index: 1;
 }
 
 .formInput,
 .formSelect {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
     font-size: 1rem;
     font-family: inherit;
-    color: #333;
+    color: #374151;
     outline: none;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
+    background: #fdfdfd;
 }
 
 .formInput:focus,
 .formSelect:focus {
     border-color: var(--primary-red);
+    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.1);
+    background: white;
+}
+
+.formInput:hover,
+.formSelect:hover {
+    border-color: #d1d5db;
 }
 
 .btnRegister {
@@ -176,6 +196,364 @@
 
 .btnRegister:hover {
     background-color: var(--primary-red-hover);
+}
+
+.slide {
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fieldLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.radioGroup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: #f8f8f8;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.radioLabel:has(input:checked) {
+    background: #fff0f0;
+    border: 1px solid var(--primary-red);
+}
+
+.chipGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.chip {
+    position: relative;
+}
+
+.chipInput {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.chipLabel {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chipInput:checked+.chipLabel {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+    color: white;
+}
+
+.chipLabel:hover {
+    background: #e8e8e8;
+}
+
+.twoFields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 1.25rem;
+}
+
+.inputLabelSmall {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.formTextarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: none;
+    height: 80px;
+}
+
+.wordCount {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.navButtons {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btnNext,
+.btnPrev {
+    flex: 1;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btnNext {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+}
+
+.btnNext:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btnPrev {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #666;
+}
+
+.missedCallBtn {
+    background: #f0f0f0;
+    border: 1px dashed #bbb;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.uploadBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 48px;
+}
+
+.labelTiny {
+    font-size: 0.7rem;
+    color: #999;
+    margin-bottom: 2px;
+}
+
+.countInput {
+    display: flex;
+    flex-direction: column;
+}
+
+.photoUploads {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropZone {
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    color: #888;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.smallDropZone {
+    flex: 1;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    color: #aaa;
+    font-size: 1.2rem;
+}
+
+.errorMsg {
+    color: var(--primary-red);
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Success Header Animation */
+.successHeader {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.successText {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #10b981;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    animation: bounceInUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards,
+        fadeOut 0.4s ease 1.2s forwards;
+}
+
+@keyframes bounceInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Heart Balloon Animation */
+.heartContainer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+.floatingHeart {
+    position: absolute;
+    bottom: -50px;
+    font-size: 24px;
+    color: var(--primary-red);
+    animation: heartRise linear forwards, heartWobble ease-in-out infinite alternate;
+    user-select: none;
+}
+
+@keyframes heartRise {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes heartWobble {
+    from {
+        margin-left: -15px;
+    }
+
+    to {
+        margin-left: 15px;
+    }
+}
+
+/* Custom Gaps for Step 3 */
+.step3Content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.uploadBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+    height: 50px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 1.25rem;
+}
+
+.uploadBtn:hover {
+    background: #f3f4f6;
+    border-color: var(--primary-red);
+    color: var(--primary-red);
 }
 
 /* Responsive Styles */

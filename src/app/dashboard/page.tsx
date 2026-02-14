@@ -15,6 +15,8 @@ export default function Dashboard() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const [profile, setProfile] = React.useState<any>(null);
+    const [stats, setStats] = React.useState({ views: 0, acceptedInterests: 0, receivedRequests: 0 });
+    const [matches, setMatches] = React.useState<any[]>([]);
     const [fetchingProfile, setFetchingProfile] = React.useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
@@ -26,19 +28,44 @@ export default function Dashboard() {
         async function fetchProfile() {
             if (user) {
                 try {
-                    const { data, error } = await supabase
+                    // Fetch profile
+                    const { data: profileData, error: profileErr } = await supabase
                         .from('profiles')
                         .select('*')
                         .eq('id', user.id)
                         .single();
 
-                    if (data) setProfile(data);
+                    if (profileData) setProfile(profileData);
+
+                    // Fetch stats
+                    const [viewsCount, acceptedCount, receivedCount] = await Promise.all([
+                        supabase.from('profile_views').select('*', { count: 'exact', head: true }).eq('viewed_profile_id', user.id),
+                        supabase.from('connection_requests').select('*', { count: 'exact', head: true }).eq('sender_id', user.id).eq('status', 'accepted'),
+                        supabase.from('connection_requests').select('*', { count: 'exact', head: true }).eq('receiver_id', user.id).eq('status', 'pending')
+                    ]);
+
+                    setStats({
+                        views: viewsCount.count || 0,
+                        acceptedInterests: acceptedCount.count || 0,
+                        receivedRequests: receivedCount.count || 0
+                    });
+
+                    // Fetch recommended matches (opp gender)
+                    const { data: matchesData } = await supabase
+                        .from('profiles')
+                        .select('id, first_name, last_name, gender, photo_url, education, location, profession')
+                        .neq('gender', profileData?.gender || 'None')
+                        .eq('status', 'approved')
+                        .limit(4);
+
+                    if (matchesData) setMatches(matchesData);
+
                 } catch (error) {
-                    console.error('Error fetching profile:', error);
+                    console.error('Error fetching dashboard data:', error);
                 } finally {
                     setFetchingProfile(false);
                 }
-            } else if (!loading && !user) { // If user is null and not loading, stop fetching
+            } else if (!loading && !user) {
                 setFetchingProfile(false);
             }
         }
@@ -94,7 +121,7 @@ export default function Dashboard() {
                     </div>
                     <div className={styles.statContent}>
                         <h4>Profile Views</h4>
-                        <p>128</p>
+                        <p>{stats.views}</p>
                     </div>
                 </div>
 
@@ -104,7 +131,7 @@ export default function Dashboard() {
                     </div>
                     <div className={styles.statContent}>
                         <h4>Accepted Interests</h4>
-                        <p>56</p>
+                        <p>{stats.acceptedInterests}</p>
                     </div>
                 </div>
 
@@ -114,7 +141,7 @@ export default function Dashboard() {
                     </div>
                     <div className={styles.statContent}>
                         <h4>Requests Received</h4>
-                        <p>32</p>
+                        <p>{stats.receivedRequests}</p>
                     </div>
                 </div>
             </div>
@@ -122,28 +149,26 @@ export default function Dashboard() {
             {/* Recommended Matches */}
             <h3 className={styles.sectionTitle}>Recommended Matches</h3>
             <div className={styles.recommendationsGrid}>
-                {[
-                    { id: 1, name: "Ankita, 28", job: "Doctor", loc: "Bengaluru", img: "/image 1.png" },
-                    { id: 2, name: "Sneha, 26", job: "Engineer", loc: "Mumbai", img: "/image 2.png" },
-                    { id: 3, name: "Priya, 27", job: "Architect", loc: "Delhi", img: "/image 3.png" },
-                    { id: 4, name: "Riya, 25", job: "Designer", loc: "Pune", img: "/image 4.png" }
-                ].map((item) => (
+                {matches.length > 0 ? matches.map((item) => (
                     <div key={item.id} className={styles.profileCard}>
                         <div className={styles.cardImageWrapper}>
                             <Image
-                                src={item.img}
+                                src={item.photo_url || "/image 1.png"}
                                 alt="Profile"
                                 fill
                                 style={{ objectFit: 'cover' }}
+                                unoptimized
                             />
                         </div>
                         <div className={styles.cardContent}>
-                            <h4 className={styles.cardName}>{item.name}</h4>
-                            <p className={styles.cardDetail}>{item.job}, {item.loc}</p>
+                            <h4 className={styles.cardName}>{item.first_name}, {item.age || 'N/A'}</h4>
+                            <p className={styles.cardDetail}>{item.profession?.title || 'Member'}, {item.location?.city || 'India'}</p>
                             <button className={styles.viewProfileBtn}>View Profile</button>
                         </div>
                     </div>
-                ))}
+                )) : (
+                    <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px', color: '#666' }}>No recommended matches found yet.</p>
+                )}
             </div>
 
             {/* People Interested (Blurred) */}

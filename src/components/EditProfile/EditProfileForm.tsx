@@ -22,25 +22,65 @@ const EditProfileForm = () => {
         dob: '',
         gender: '',
         height: '',
+        weight: '',
         marital_status: '',
-        religion_id: '', // Ideally fetch religions and map
-        caste_id: '',    // Ideally fetch castes and map
+        religion_id: '',
+        caste_id: '',
         mother_tongue: '',
-        manglik: 'no',   // 'yes' or 'no'
-        education: {},   // JSONB structure, simplified for now to string or specific fields
-        profession: {},  // JSONB
-        // For UI simplicity, maybe flatten some jsonb fields temporarily or manage properly
+        manglik: 'no',
+        education: {} as any,
+        profession: {} as any,
         highest_education: '',
-        profession_title: ''
+        profession_title: '',
+        annual_income: '',
+        complexion: '',
+        body_type: '',
+        blood_group: '',
+        about_me: '',
+        city: '',
+        state: '',
+        country: 'India'
     });
 
+    const [religions, setReligions] = useState<any[]>([]);
+    const [castes, setCastes] = useState<any[]>([]);
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
     useEffect(() => {
+        fetchReligions();
         if (user) {
             fetchProfile();
         }
     }, [user]);
+
+    useEffect(() => {
+        if (formData.religion_id) {
+            fetchCastes(formData.religion_id);
+        } else {
+            setCastes([]);
+        }
+    }, [formData.religion_id]);
+
+    const fetchReligions = async () => {
+        const { data, error } = await supabase
+            .from('religions')
+            .select('id, name')
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
+        if (data) setReligions(data);
+    };
+
+    const fetchCastes = async (religionId: string) => {
+        const { data, error } = await supabase
+            .from('castes')
+            .select('id, name')
+            .eq('religion_id', religionId)
+            .eq('is_active', true)
+            .order('display_order', { ascending: true });
+
+        if (data) setCastes(data);
+    };
 
     const fetchProfile = async () => {
         try {
@@ -57,15 +97,24 @@ const EditProfileForm = () => {
                     dob: data.date_of_birth || '',
                     gender: data.gender || '',
                     height: data.height ? data.height.toString() : '',
+                    weight: data.weight ? data.weight.toString() : '',
                     marital_status: data.marital_status || '',
-                    religion_id: data.religion_id || '', // Need to handle UUID vs Name if UI uses text
+                    religion_id: data.religion_id || '',
                     caste_id: data.caste_id || '',
                     mother_tongue: data.mother_tongue || '',
-                    manglik: 'no', // Default, need to check if schema supports this (not seen in schema, assumed 'pending' or stored in jsonb)
+                    manglik: data.horoscope?.manglik || 'no',
                     education: data.education || {},
                     profession: data.profession || {},
                     highest_education: data.education?.highest || '',
-                    profession_title: data.profession?.title || ''
+                    profession_title: data.profession?.title || '',
+                    annual_income: data.annual_income ? data.annual_income.toString() : '',
+                    complexion: data.complexion || '',
+                    body_type: data.body_type || '',
+                    blood_group: data.blood_group || '',
+                    about_me: data.about_me || '',
+                    city: data.location?.city || '',
+                    state: data.location?.state || '',
+                    country: data.location?.country || 'India'
                 });
                 setPhotoUrl(data.photo_url);
             }
@@ -139,12 +188,21 @@ const EditProfileForm = () => {
                 gender: formData.gender,
                 date_of_birth: formData.dob || null, // handle empty string
                 height: formData.height ? parseFloat(formData.height) : null,
+                weight: formData.weight ? parseFloat(formData.weight) : null,
                 marital_status: formData.marital_status,
                 mother_tongue: formData.mother_tongue,
-                // religion_id and caste_id need valid UUIDs. 
-                // schema requires UUID. If UI uses text, we can't save directly unless valid.
-                // For MVP, if backend expects UUID, we skip saving text IDs unless we have a mapping.
-                // Assuming 'religion_id' is fetched and untouched if not changed or valid UUIDs provided.
+                religion_id: formData.religion_id || null,
+                caste_id: formData.caste_id || null,
+                annual_income: formData.annual_income ? parseFloat(formData.annual_income) : null,
+                complexion: formData.complexion,
+                body_type: formData.body_type,
+                blood_group: formData.blood_group,
+                about_me: formData.about_me,
+                location: {
+                    city: formData.city,
+                    state: formData.state,
+                    country: formData.country
+                },
                 education: { highest: formData.highest_education },
                 profession: { title: formData.profession_title },
                 horoscope: { manglik: formData.manglik },
@@ -328,18 +386,32 @@ const EditProfileForm = () => {
                         */}
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Religion</label>
-                            <select className={styles.select} disabled>
-                                <option>Hindu</option> {/* Placeholder */}
+                            <select
+                                name="religion_id"
+                                className={styles.select}
+                                value={formData.religion_id}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select Religion</option>
+                                {religions.map(r => (
+                                    <option key={r.id} value={r.id}>{r.name}</option>
+                                ))}
                             </select>
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Caste</label>
-                            <input
-                                type="text"
-                                className={styles.input}
-                                placeholder="Brahmin"
-                                disabled
-                            />
+                            <select
+                                name="caste_id"
+                                className={styles.select}
+                                value={formData.caste_id}
+                                onChange={handleChange}
+                                disabled={!formData.religion_id}
+                            >
+                                <option value="">Select Caste</option>
+                                {castes.map(c => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Mother Tongue</label>
@@ -429,6 +501,104 @@ const EditProfileForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+                    </div>
+                </div>
+
+                {/* Physical Attributes & Income */}
+                <div className={styles.section}>
+                    <div className={styles.sectionTitle}>
+                        <Users size={20} color="#E31E24" />
+                        Physical & Income
+                    </div>
+                    <div className={styles.fieldsGrid}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Weight (kg)</label>
+                            <input
+                                type="number"
+                                name="weight"
+                                className={styles.input}
+                                placeholder="e.g. 70"
+                                value={formData.weight}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Complexion</label>
+                            <select name="complexion" className={styles.select} value={formData.complexion} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="Very Fair">Very Fair</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Wheatish">Wheatish</option>
+                                <option value="Dark">Dark</option>
+                            </select>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Body Type</label>
+                            <select name="body_type" className={styles.select} value={formData.body_type} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="Slim">Slim</option>
+                                <option value="Athletic">Athletic</option>
+                                <option value="Average">Average</option>
+                                <option value="Heavy">Heavy</option>
+                            </select>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Blood Group</label>
+                            <select name="blood_group" className={styles.select} value={formData.blood_group} onChange={handleChange}>
+                                <option value="">Select</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Annual Income (₹)</label>
+                            <input
+                                type="number"
+                                name="annual_income"
+                                className={styles.input}
+                                placeholder="e.g. 1200000"
+                                value={formData.annual_income}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Location & About */}
+                <div className={styles.section}>
+                    <div className={styles.sectionTitle}>
+                        <Users size={20} color="#E31E24" />
+                        Location & Bio
+                    </div>
+                    <div className={styles.fieldsGrid}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>City</label>
+                            <input type="text" name="city" className={styles.input} value={formData.city} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>State</label>
+                            <input type="text" name="state" className={styles.input} value={formData.state} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Country</label>
+                            <input type="text" name="country" className={styles.input} value={formData.country} onChange={handleChange} />
+                        </div>
+                    </div>
+                    <div className={styles.formGroup} style={{ marginTop: '20px' }}>
+                        <label className={styles.label}>About Me</label>
+                        <textarea
+                            name="about_me"
+                            className={styles.input}
+                            style={{ minHeight: '100px', resize: 'vertical' }}
+                            value={formData.about_me}
+                            onChange={(e: any) => handleChange(e as any)}
+                        />
                     </div>
                 </div>
 
