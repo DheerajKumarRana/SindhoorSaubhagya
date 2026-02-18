@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Hero.module.css';
-import { Heart, ChevronRight, ChevronLeft, CheckCircle } from 'lucide-react';
+import { Heart, ChevronRight, ChevronLeft, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { useModal } from '@/context/ModalContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import CustomSelect from '../common/CustomSelect';
 
 const Hero = () => {
     const { openSignUp } = useModal();
@@ -18,12 +19,19 @@ const Hero = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const [showHearts, setShowHearts] = useState(false);
-    const [showHeader, setShowHeader] = useState(false);
-    const [headerText, setHeaderText] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        // Ensure strictly no session when starting registration on Hero
+        const clearSession = async () => {
+            await supabase.auth.signOut();
+        };
+        clearSession();
+    }, []);
 
     // Form Data
     const [formData, setFormData] = useState({
+        // ... existing fields ...
         // Step 1: Account
         email: '',
         password: '',
@@ -39,12 +47,17 @@ const Hero = () => {
         gender: '',
         lookingFor: '',
         height: '',
+        weight: '',
+        bodyType: '',
+        bloodGroup: '',
+        complexion: '',
         maritalStatus: '',
         motherTongue: '',
         religion: '',
         caste: '',
         subCaste: '',
         manglik: 'no',
+        horoscopeFile: null as File | null, // Added for file
 
         // Step 4: Career
         degree: '',
@@ -70,10 +83,11 @@ const Hero = () => {
         // Step 6: Bio & Photo
         aboutMe: '',
         phone: '',
-        otp: ''
+        otp: '',
+        photos: [] as File[] // Added for photos
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name: string; value: string } }) => {
         const { name, value } = e.target;
 
         // Logic for Step 2: Auto-fill Gender and Looking For
@@ -101,24 +115,87 @@ const Hero = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const triggerFlair = () => {
-        const messages = ["Great Progress!", "Looking Good!", "Almost There!", "Nearly Done!", "Excellent!", "Fantastic!"];
-        setHeaderText(messages[Math.floor(Math.random() * messages.length)]);
-        setShowHeader(true);
-        setShowHearts(true);
-        setTimeout(() => setShowHeader(false), 2000);
-        setTimeout(() => setShowHearts(false), 4000);
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, files } = e.target;
+        if (files && files.length > 0) {
+            if (id === 'horoscope') {
+                setFormData(prev => ({ ...prev, horoscopeFile: files[0] }));
+            } else if (id.startsWith('photo')) {
+                // Logic to append or replace photos could go here. 
+                // For simplicity, we'll just log it or add to a list if we had complex logic.
+                // Since UI has specific slots (photo1, photo2, photo3), we might want to store them by index or ID.
+                // For this implementation, we will push to the photos array.
+                setFormData(prev => ({ ...prev, photos: [...prev.photos, files[0]] }));
+            }
+        }
     };
 
-    const nextStep = () => {
-        triggerFlair();
+
+
+    const nextStep = async () => {
+        if (step === 1) {
+            // Validate Step 1
+            if (!formData.profileFor || !formData.email || !formData.password || !formData.phone) {
+                setError('Please fill in all fields');
+                return;
+            }
+            if (formData.password.length < 6) {
+                setError('Password must be at least 6 characters');
+                return;
+            }
+
+            // Check for duplicate email
+            setLoading(true);
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', formData.email)
+                    .maybeSingle();
+
+                if (data) {
+                    setError('Email already registered. Please login.');
+                    setLoading(false);
+                    return;
+                }
+            } catch (err) {
+                // Ignore
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (step === 2) {
+            if (!formData.dob) {
+                setError("Please select Date of Birth");
+                return;
+            }
+            const dobDate = new Date(formData.dob);
+            const today = new Date();
+            // Calculate age
+            let age = today.getFullYear() - dobDate.getFullYear();
+            const m = today.getMonth() - dobDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                alert("You must be at least 18 years old to register.");
+                return;
+            }
+            if (dobDate > today) {
+                alert("Date of birth cannot be in the future.");
+                return;
+            }
+        }
+        setError('');
         setStep(prev => prev + 1);
     };
     const prevStep = () => setStep(prev => prev - 1);
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (step < 7) {
+        if (step < 6) {
             nextStep();
             return;
         }
@@ -127,6 +204,59 @@ const Hero = () => {
         setError(null);
 
         try {
+            // 1. Upload Photos
+            const photoUrls: string[] = [];
+            if (formData.photos.length > 0) {
+                // We need a user ID to store files, but we don't have one yet.
+                // Strategy: Upload to a temporary location or use a unique identifier (like email hash or timestamp)
+                // Better Strategy for SignUp: Use a random folder name first, then we could move it, 
+                // but simpler is to just use a timestamp-based folder for now since we don't have the UID yet.
+                // OR: Authenticate anonymously? No.
+                // actually, we can't upload to a user-specific folder securely before signup if strict RLS is on.
+                // Assuming public bucket or open upload policy for now as per plan.
+
+                for (const file of formData.photos) {
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = Date.now() + '-' + Math.random().toString(36).substring(7) + '.' + fileExt;
+                    const filePath = 'uploads/' + fileName;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('profile-photos')
+                        .upload(filePath, file);
+
+                    if (uploadError) {
+                        console.error('Error uploading photo:', uploadError);
+                        alert(`Photo upload failed: ${uploadError.message}. Check storage permissions.`);
+                        continue;
+                    }
+
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('profile-photos')
+                        .getPublicUrl(filePath);
+
+                    photoUrls.push(publicUrl);
+                }
+            }
+
+            // 2. Upload Horoscope
+            let horoscopeUrl = '';
+            if (formData.horoscopeFile) {
+                const fileExt = formData.horoscopeFile.name.split('.').pop();
+                const fileName = 'horoscope-' + Date.now() + '.' + fileExt;
+                const filePath = 'uploads/' + fileName;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('profile-photos') // Using same bucket for simplicity
+                    .upload(filePath, formData.horoscopeFile);
+
+                if (!uploadError) {
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('profile-photos')
+                        .getPublicUrl(filePath);
+                    horoscopeUrl = publicUrl;
+                }
+            }
+
             const { data, error: signUpError } = await supabase.auth.signUp({
                 email: formData.email,
                 password: formData.password,
@@ -137,6 +267,10 @@ const Hero = () => {
                         gender: formData.gender,
                         date_of_birth: formData.dob,
                         height: formData.height,
+                        weight: formData.weight,
+                        body_type: formData.bodyType,
+                        blood_group: formData.bloodGroup,
+                        complexion: formData.complexion,
                         marital_status: formData.maritalStatus,
                         mother_tongue: formData.motherTongue,
                         religion_name: formData.religion,
@@ -164,12 +298,87 @@ const Hero = () => {
                         family_location: formData.familyLocation,
                         about_me: formData.aboutMe,
                         phone: formData.phone,
+                        about_family: formData.aboutFamily,
+                        photos: photoUrls,
+                        photo_url: photoUrls.length > 0 ? photoUrls[0] : null, // Added photo_url for trigger
+                        horoscope_file: horoscopeUrl
                     },
                 },
             });
 
             if (signUpError) throw signUpError;
-            router.push('/plans');
+
+            // Explicitly update profile with photos and other complex data to ensure sync
+            // This runs after trigger creates the profile row
+            if (data.user) {
+                // Determine if we have a session. If email confirmation is enabled, we might not.
+                // If we have a session, we can update.
+                // If not, we rely entirely on the trigger.
+
+                // Attempt to sign in if no session (only works if auto-confirm is on or we have password)
+                if (!data.session) {
+                    const { data: signInData } = await supabase.auth.signInWithPassword({
+                        email: formData.email,
+                        password: formData.password,
+                    });
+                }
+
+                // Prepare updates object with ALL fields
+                const updates = {
+                    first_name: formData.firstName,
+                    last_name: formData.lastName,
+                    gender: formData.gender,
+                    date_of_birth: formData.dob || null,
+                    height: formData.height ? parseFloat(formData.height) : null,
+                    weight: formData.weight ? parseFloat(formData.weight) : null,
+                    body_type: formData.bodyType,
+                    blood_group: formData.bloodGroup,
+                    complexion: formData.complexion,
+                    marital_status: formData.maritalStatus,
+                    mother_tongue: formData.motherTongue,
+                    religion_name: formData.religion,
+                    caste_name: formData.caste,
+                    sub_caste_name: formData.subCaste,
+                    manglik: formData.manglik,
+                    profile_for: formData.profileFor,
+                    managed_by: formData.managedBy,
+                    degree: formData.degree,
+                    employed_in: formData.employedIn,
+                    occupation: formData.occupation,
+                    annual_income: formData.income ? parseFloat(formData.income) : null,
+                    country: formData.country,
+                    state: formData.state,
+                    city: formData.city,
+                    family_type: formData.familyType,
+                    father_occupation: formData.fatherOcc,
+                    mother_occupation: formData.motherOcc,
+                    brothers_total: formData.brothersTotal ? parseInt(formData.brothersTotal) : 0,
+                    brothers_married: formData.brothersMarried ? parseInt(formData.brothersMarried) : 0,
+                    sisters_total: formData.sistersTotal ? parseInt(formData.sistersTotal) : 0,
+                    sisters_married: formData.sistersMarried ? parseInt(formData.sistersMarried) : 0,
+                    native_city: formData.nativeCity,
+                    family_location: formData.familyLocation,
+                    about_me: formData.aboutMe,
+                    about_family: formData.aboutFamily,
+                    photos: photoUrls,
+                    photo_url: photoUrls.length > 0 ? photoUrls[0] : null, // Set main photo
+                    updated_at: new Date().toISOString(),
+                    id: data.user.id, // Required for upsert
+                };
+
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .upsert(updates)
+                    .select();
+
+                if (updateError) {
+                    console.error("Error updating profile (fallback):", updateError);
+                }
+            }
+
+            // Show success message and redirect
+            alert("Your profile is created! Please Login with your credentials.");
+            window.location.href = '/';
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -200,45 +409,19 @@ const Hero = () => {
                         A trusted matrimonial platform helping families and individuals connect with verified, faith-aligned, and serious profiles.
                     </p>
                     <div className={styles.actionButtons}>
-                        <button className={styles.btnPrimary} onClick={() => openSignUp()}>Get Started Free</button>
-                        <Link href="/membership" className={styles.btnSecondary}>Our Plans</Link>
+                        <Link href="/plans" className={styles.btnPrimary}>Our Plans</Link>
+                        <Link href="/contact" className={styles.btnSecondary}>Contact Us</Link>
                     </div>
                 </div>
 
                 <div className={styles.formCard}>
                     <h3 className={styles.formTitle}>
-                        {showHeader && (
-                            <div className={styles.successHeader}>
-                                <div className={styles.successText}>{headerText}</div>
-                            </div>
-                        )}
-
-                        {showHearts && (
-                            <div className={styles.heartContainer}>
-                                {[...Array(15)].map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={styles.floatingHeart}
-                                        style={{
-                                            left: `${Math.random() * 100}%`,
-                                            animationDuration: `${3 + Math.random() * 2}s`,
-                                            animationDelay: `${Math.random() * 1}s`,
-                                            fontSize: `${16 + Math.random() * 20}px`,
-                                            opacity: 0.8
-                                        }}
-                                    >
-                                        ❤
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                         {step === 1 && "Register"}
                         {step === 2 && "Step 2 – Profile For + Basic Info"}
                         {step === 3 && "Step 3 – Personal Details"}
                         {step === 4 && "Step 4 – Career & Education"}
                         {step === 5 && "Step 5 – Family & Lifestyle"}
                         {step === 6 && "Step 6 – About & Photos"}
-                        {step === 7 && "Mobile Verification"}
                     </h3>
 
                     <form onSubmit={handleRegister}>
@@ -246,22 +429,22 @@ const Hero = () => {
                             <div className={styles.slide}>
                                 <div className={styles.formGroup}>
                                     <span className={styles.inputLabel}>Create Profile for</span>
-                                    <select
+                                    <CustomSelect
                                         name="profileFor"
-                                        className={styles.formSelect}
                                         value={formData.profileFor}
                                         onChange={handleChange}
                                         required
-                                    >
-                                        <option value="" disabled>Select Profile For</option>
-                                        <option value="self">Self</option>
-                                        <option value="son">Son</option>
-                                        <option value="daughter">Daughter</option>
-                                        <option value="sister">Sister</option>
-                                        <option value="brother">Brother</option>
-                                        <option value="friend">Relative/Friend</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                        placeholder="Select Profile For"
+                                        options={[
+                                            { value: 'self', label: 'Self' },
+                                            { value: 'son', label: 'Son' },
+                                            { value: 'daughter', label: 'Daughter' },
+                                            { value: 'sister', label: 'Sister' },
+                                            { value: 'brother', label: 'Brother' },
+                                            { value: 'friend', label: 'Relative/Friend' },
+                                            { value: 'other', label: 'Other' },
+                                        ]}
+                                    />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <input type="email" name="email" placeholder="Email address" className={styles.formInput} value={formData.email} onChange={handleChange} required />
@@ -269,8 +452,32 @@ const Hero = () => {
                                 <div className={styles.formGroup}>
                                     <input type="tel" name="phone" placeholder="Phone number" className={styles.formInput} value={formData.phone} onChange={handleChange} required />
                                 </div>
-                                <div className={styles.formGroup}>
-                                    <input type="password" name="password" placeholder="Create Password" className={styles.formInput} value={formData.password} onChange={handleChange} required />
+                                <div className={styles.formGroup} style={{ position: 'relative' }}>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        placeholder="Create Password"
+                                        className={styles.formInput}
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{
+                                            position: 'absolute',
+                                            right: '10px',
+                                            top: '50%',
+                                            transform: 'translateY(-50%)',
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            color: '#666'
+                                        }}
+                                    >
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
                                 </div>
                             </div>
                         )}
@@ -299,21 +506,28 @@ const Hero = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <div className={styles.formGroup}>
-                                    <input type="text" name="firstName" placeholder="Full Name (First & Last)" className={styles.formInput} value={formData.firstName} onChange={handleChange} required />
+                                <div className={styles.twoFields}>
+                                    <input type="text" name="firstName" placeholder="First Name" className={styles.formInput} value={formData.firstName} onChange={handleChange} required />
+                                    <input type="text" name="lastName" placeholder="Last Name" className={styles.formInput} value={formData.lastName} onChange={handleChange} required />
                                 </div>
                                 <div className={styles.twoFields}>
                                     <div className={styles.formGroup}>
                                         <span className={styles.inputLabelSmall}>Date of Birth</span>
-                                        <input type="date" name="dob" className={styles.formInput} value={formData.dob} onChange={handleChange} required />
+                                        <input type="date" name="dob" className={styles.formInput} value={formData.dob} onChange={handleChange} max={new Date().toISOString().split('T')[0]} required />
                                     </div>
                                     <div className={styles.formGroup}>
                                         <span className={styles.inputLabelSmall}>Gender</span>
-                                        <select name="gender" className={styles.formSelect} value={formData.gender} onChange={handleChange} required>
-                                            <option value="">Select</option>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                        </select>
+                                        <CustomSelect
+                                            name="gender"
+                                            value={formData.gender}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Select"
+                                            options={[
+                                                { value: 'male', label: 'Male' },
+                                                { value: 'female', label: 'Female' },
+                                            ]}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -323,39 +537,108 @@ const Hero = () => {
                             <div className={`${styles.slide} ${styles.step3Content}`}>
                                 <div className={styles.twoFields}>
                                     <input type="number" name="height" placeholder="Height (cm)" className={styles.formInput} value={formData.height} onChange={handleChange} required />
-                                    <select name="maritalStatus" className={styles.formSelect} value={formData.maritalStatus} onChange={handleChange} required>
-                                        <option value="">Marital Status</option>
-                                        <option value="Never Married">Never Married</option>
-                                        <option value="Divorced">Divorced</option>
-                                        <option value="Widowed">Widowed</option>
-                                        <option value="Awaiting Divorce">Awaiting Divorce</option>
-                                    </select>
+                                    <input type="number" name="weight" placeholder="Weight (kg)" className={styles.formInput} value={formData.weight} onChange={handleChange} required />
+                                </div>
+                                <div className={styles.twoFields}>
+                                    <CustomSelect
+                                        name="bodyType"
+                                        value={formData.bodyType}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Body Type"
+                                        options={[
+                                            { value: 'Slim', label: 'Slim' },
+                                            { value: 'Athletic', label: 'Athletic' },
+                                            { value: 'Average', label: 'Average' },
+                                            { value: 'Heavy', label: 'Heavy' },
+                                        ]}
+                                    />
+                                    <CustomSelect
+                                        name="bloodGroup"
+                                        value={formData.bloodGroup}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Blood Group"
+                                        options={[
+                                            { value: 'A+', label: 'A+' },
+                                            { value: 'A-', label: 'A-' },
+                                            { value: 'B+', label: 'B+' },
+                                            { value: 'B-', label: 'B-' },
+                                            { value: 'AB+', label: 'AB+' },
+                                            { value: 'AB-', label: 'AB-' },
+                                            { value: 'O+', label: 'O+' },
+                                            { value: 'O-', label: 'O-' },
+                                        ]}
+                                    />
+                                </div>
+                                <div className={styles.twoFields}>
+                                    <CustomSelect
+                                        name="complexion"
+                                        value={formData.complexion}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Complexion"
+                                        options={[
+                                            { value: 'Very Fair', label: 'Very Fair' },
+                                            { value: 'Fair', label: 'Fair' },
+                                            { value: 'Wheatish', label: 'Wheatish' },
+                                            { value: 'Dark', label: 'Dark' },
+                                        ]}
+                                    />
+                                    <CustomSelect
+                                        name="maritalStatus"
+                                        value={formData.maritalStatus}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Marital Status"
+                                        options={[
+                                            { value: 'Never Married', label: 'Never Married' },
+                                            { value: 'Divorced', label: 'Divorced' },
+                                            { value: 'Widowed', label: 'Widowed' },
+                                            { value: 'Awaiting Divorce', label: 'Awaiting Divorce' },
+                                        ]}
+                                    />
                                 </div>
                                 <div className={styles.twoFields}>
                                     <input type="text" name="motherTongue" placeholder="Mother Tongue" className={styles.formInput} value={formData.motherTongue} onChange={handleChange} required />
-                                    <select name="religion" className={styles.formSelect} value={formData.religion} onChange={handleChange} required>
-                                        <option value="">Select Religion</option>
-                                        <option value="Hindu">Hindu</option>
-                                        <option value="Muslim">Muslim</option>
-                                        <option value="Sikh">Sikh</option>
-                                        <option value="Christian">Christian</option>
-                                        <option value="Jain">Jain</option>
-                                    </select>
+                                    <CustomSelect
+                                        name="religion"
+                                        value={formData.religion}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Select Religion"
+                                        options={[
+                                            { value: 'Hindu', label: 'Hindu' },
+                                            { value: 'Muslim', label: 'Muslim' },
+                                            { value: 'Sikh', label: 'Sikh' },
+                                            { value: 'Christian', label: 'Christian' },
+                                            { value: 'Jain', label: 'Jain' },
+                                        ]}
+                                    />
                                 </div>
                                 <div className={styles.twoFields}>
                                     <input type="text" name="caste" placeholder="Caste" className={styles.formInput} value={formData.caste} onChange={handleChange} required />
                                     <input type="text" name="subCaste" placeholder="Sub Caste" className={styles.formInput} value={formData.subCaste} onChange={handleChange} />
                                 </div>
                                 <div className={styles.twoFields}>
-                                    <select name="manglik" className={styles.formSelect} value={formData.manglik} onChange={handleChange} required>
-                                        <option value="no">Not Manglik</option>
-                                        <option value="yes">Manglik</option>
-                                        <option value="partial">Anshik Manglik</option>
-                                        <option value="dont_know">Don't Know</option>
-                                    </select>
+                                    <CustomSelect
+                                        name="manglik"
+                                        value={formData.manglik}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Manglik Status"
+                                        options={[
+                                            { value: 'no', label: 'Not Manglik' },
+                                            { value: 'yes', label: 'Manglik' },
+                                            { value: 'partial', label: 'Anshik Manglik' },
+                                            { value: 'dont_know', label: "Don't Know" },
+                                        ]}
+                                    />
                                     <div className={styles.uploadBtn}>
-                                        <input type="file" id="horoscope" style={{ display: 'none' }} />
-                                        <label htmlFor="horoscope" style={{ fontSize: '0.9rem', cursor: 'pointer', fontWeight: 500 }}>Upload Horoscope (Opt)</label>
+                                        <input type="file" id="horoscope" style={{ display: 'none' }} onChange={handleFileChange} />
+                                        <label htmlFor="horoscope" style={{ fontSize: '0.9rem', cursor: 'pointer', fontWeight: 500, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {formData.horoscopeFile ? formData.horoscopeFile.name : 'Upload Horoscope (Opt)'}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -365,15 +648,23 @@ const Hero = () => {
                             <div className={styles.slide}>
                                 <div className={styles.twoFields}>
                                     <input type="text" name="degree" placeholder="Highest Degree" className={styles.formInput} value={formData.degree} onChange={handleChange} required />
-                                    <select name="employedIn" className={styles.formSelect} value={formData.employedIn} onChange={handleChange} required>
-                                        <option value="">Employed In</option>
-                                        <option value="Private">Private</option>
-                                        <option value="Government">Government</option>
-                                        <option value="Business">Business</option>
-                                        <option value="Self-Employed">Self Employed</option>
-                                    </select>
+                                    <CustomSelect
+                                        name="employedIn"
+                                        value={formData.employedIn}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Employed In"
+                                        options={[
+                                            { value: 'Private', label: 'Private' },
+                                            { value: 'Government', label: 'Government' },
+                                            { value: 'Business', label: 'Business' },
+                                            { value: 'Self-Employed', label: 'Self Employed' },
+                                        ]}
+                                    />
                                 </div>
-                                <input type="text" name="occupation" placeholder="Occupation / Job Title" className={styles.formInput} value={formData.occupation} onChange={handleChange} required />
+                                <div className={styles.formGroup}>
+                                    <input type="text" name="occupation" placeholder="Occupation / Job Title" className={styles.formInput} value={formData.occupation} onChange={handleChange} required />
+                                </div>
                                 <div className={styles.twoFields}>
                                     <input type="number" name="income" placeholder="Annual Income (₹)" className={styles.formInput} value={formData.income} onChange={handleChange} required />
                                     <input type="text" name="country" placeholder="Country" className={styles.formInput} value={formData.country} onChange={handleChange} required />
@@ -388,11 +679,17 @@ const Hero = () => {
                         {step === 5 && (
                             <div className={styles.slide}>
                                 <div className={styles.twoFields}>
-                                    <select name="familyType" className={styles.formSelect} value={formData.familyType} onChange={handleChange} required>
-                                        <option value="">Family Type</option>
-                                        <option value="Nuclear">Nuclear</option>
-                                        <option value="Joint">Joint</option>
-                                    </select>
+                                    <CustomSelect
+                                        name="familyType"
+                                        value={formData.familyType}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Family Type"
+                                        options={[
+                                            { value: 'Nuclear', label: 'Nuclear' },
+                                            { value: 'Joint', label: 'Joint' },
+                                        ]}
+                                    />
                                     <input type="text" name="nativeCity" placeholder="Native City" className={styles.formInput} value={formData.nativeCity} onChange={handleChange} />
                                 </div>
                                 <div className={styles.twoFields}>
@@ -415,8 +712,12 @@ const Hero = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <input type="text" name="familyLocation" placeholder="Family Living In" className={styles.formInput} value={formData.familyLocation} onChange={handleChange} />
-                                <textarea name="aboutFamily" placeholder="About my family (Optional)" className={styles.formTextarea} value={formData.aboutFamily} onChange={handleChange} style={{ height: '50px' }} />
+                                <div className={styles.formGroup}>
+                                    <input type="text" name="familyLocation" placeholder="Family Living In" className={styles.formInput} value={formData.familyLocation} onChange={handleChange} />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <textarea name="aboutFamily" placeholder="About my family (Optional)" className={styles.formTextarea} value={formData.aboutFamily} onChange={handleChange} style={{ height: '80px' }} />
+                                </div>
                             </div>
                         )}
 
@@ -434,14 +735,31 @@ const Hero = () => {
                                 <span className={styles.wordCount}>
                                     {formData.aboutMe.trim().split(/\s+/).filter(Boolean).length} words
                                 </span>
+                                <div className={styles.photoInfo}>
+                                    <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '8px' }}>
+                                        Max size: 5MB per image. Formats: JPG, PNG.
+                                    </p>
+                                </div>
                                 <div className={styles.photoUploads}>
                                     <div className={styles.dropZone}>
-                                        <input type="file" id="photo1" style={{ display: 'none' }} />
-                                        <label htmlFor="photo1">Upload Profile Photo<br /><span style={{ fontSize: '0.7rem' }}>( Drag & Drop )</span></label>
+                                        <input type="file" id="photo1" style={{ display: 'none' }} onChange={handleFileChange} />
+                                        <label htmlFor="photo1" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                            {formData.photos[0] ? formData.photos[0].name : <>Upload Profile Photo<br /><span style={{ fontSize: '0.7rem' }}>( Drag & Drop )</span></>}
+                                        </label>
                                     </div>
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <div className={styles.smallDropZone}><input type="file" id="photo2" style={{ display: 'none' }} /><label htmlFor="photo2">+</label></div>
-                                        <div className={styles.smallDropZone}><input type="file" id="photo3" style={{ display: 'none' }} /><label htmlFor="photo3">+</label></div>
+                                        <div className={styles.smallDropZone}>
+                                            <input type="file" id="photo2" style={{ display: 'none' }} onChange={handleFileChange} />
+                                            <label htmlFor="photo2" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {formData.photos[1] ? '✓' : '+'}
+                                            </label>
+                                        </div>
+                                        <div className={styles.smallDropZone}>
+                                            <input type="file" id="photo3" style={{ display: 'none' }} onChange={handleFileChange} />
+                                            <label htmlFor="photo3" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {formData.photos[2] ? '✓' : '+'}
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className={styles.checkboxGroup}>
@@ -451,19 +769,7 @@ const Hero = () => {
                             </div>
                         )}
 
-                        {step === 7 && (
-                            <div className={styles.slide}>
-                                <div className={styles.formGroup}>
-                                    <input type="tel" name="phone" placeholder="Mobile Number" className={styles.formInput} value={formData.phone} onChange={handleChange} required disabled />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <input type="text" name="otp" placeholder="Enter OTP" className={styles.formInput} value={formData.otp} onChange={handleChange} />
-                                </div>
-                                <button type="button" className={styles.missedCallBtn} style={{ background: 'var(--primary-red)', color: 'white', border: 'none' }}>Verify Number</button>
-                                <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#888', margin: '5px 0' }}>OR</div>
-                                <button type="button" className={styles.missedCallBtn}>Get Missed Call for Verification</button>
-                            </div>
-                        )}
+
 
                         {error && <p className={styles.errorMsg}>{error}</p>}
 
@@ -479,9 +785,9 @@ const Hero = () => {
                                 disabled={loading || (step === 6 && !isConfirmed)}
                             >
                                 {loading ? 'Processing...' :
-                                    step === 1 ? 'Register for free' :
-                                        step === 7 ? 'Submit Details' : 'Next'}
-                                {step < 7 && <ChevronRight size={20} />}
+                                    step === 1 ? 'Start Registration' : // Changed from 'Register for free' to match design preference if needed, or keep 'Register for free'
+                                        step === 6 ? 'Register & Verify Email' : 'Next'}
+                                {step < 6 && <ChevronRight size={20} />}
                             </button>
                         </div>
                     </form>

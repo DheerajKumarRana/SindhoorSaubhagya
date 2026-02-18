@@ -1,0 +1,107 @@
+.customSelect {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+.customSelect.open {
+    z-index: 100;
+}
+
+.customSelectTrigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #374151;
+    background: #fdfdfd;
+    height: 48px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.customSelect.open .customSelectTrigger {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.1);
+    background: white;
+}
+
+.placeholder {
+    color: #9ca3af;
+}
+
+.icon {
+    color: #9ca3af;
+    transition: transform 0.3s;
+}
+
+.customSelect.open .icon {
+    transform: rotate(180deg);
+}
+
+.optionsList {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.customSelect.open .optionsList {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.option {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.option:hover {
+    background: #fff0f0;
+    color: var(--primary-red);
+}
+
+.option.selected {
+    background: #fff0f0;
+    color: var(--primary-red);
+    font-weight: 500;
+}
+
+/* Scrollbar styling */
+.optionsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.optionsList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 12px 12px 0;
+}
+
+.optionsList::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.optionsList::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}

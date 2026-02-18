@@ -34,9 +34,49 @@ export async function updateSession(request: NextRequest) {
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
     // If you're creating a new Response object, you must include the set-cookie headers from supabaseResponse.
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // PROTECTED ROUTE LOGIC
+    // 1. Check for /admin routes
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log("Middleware: Checking /admin route. Path:", request.nextUrl.pathname);
+        console.log("Middleware: User found?", !!user, "ID:", user?.id);
+
+        // Allow access to login page without auth
+        if (request.nextUrl.pathname === '/admin/login') {
+            if (user) {
+                // If already logged in, check if admin before redirecting to dashboard
+                // This prevents infinite redirect loop if redirects back to login on failure
+            }
+            return supabaseResponse;
+        }
+
+        // If not logged in, redirect to admin login
+        if (!user) {
+            console.log("Middleware: No user, redirecting to login");
+            const url = request.nextUrl.clone();
+            url.pathname = '/admin/login';
+            return NextResponse.redirect(url);
+        }
+
+        // If logged in, verify admin status
+        // We use the secure function or direct query. 
+        // Direct query to admin_users is fine if policies allow select for self (which they do via is_admin function now)
+        const { data: adminUser, error: adminError } = await supabase
+            .from('admin_users')
+            .select('role')
+            .eq('user_id', user.id)
+            .eq('is_active', true)
+            .single();
+
+        console.log("Middleware: Admin check result:", adminUser, "Error:", adminError);
+
+        if (!adminUser) {
+            console.log("Middleware: Not an admin, redirecting to home");
+            const url = request.nextUrl.clone();
+            url.pathname = '/';
+            return NextResponse.redirect(url);
+        }
+    }
 
     return supabaseResponse
 }

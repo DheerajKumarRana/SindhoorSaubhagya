@@ -1,0 +1,302 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { User, Users, GraduationCap, X, Eye, Image as ImageIcon, CheckCircle, XCircle } from 'lucide-react';
+// Reuse styles from EditProfile for consistency, or copy them if needed. 
+// Assuming we can reuse the module or similar class names.
+// For now, let's use tailwind classes for admin panel to keep it consistent with admin theme.
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+
+export default function AdminUserDetails({ userId }: { userId: string }) {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [photos, setPhotos] = useState<string[]>([]);
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    const supabase = createClient();
+
+    // Form State (Same as EditProfile)
+    const [formData, setFormData] = useState<any>({
+        // Initialize with defaults to avoid uncontrolled inputs
+        first_name: '', last_name: '', dob: '', gender: '', height: '', weight: '',
+        marital_status: '', mother_tongue: '', religion_name: '', caste_name: '', sub_caste_name: '',
+        manglik: 'no', degree: '', occupation: '', employed_in: '', annual_income: '',
+        complexion: '', body_type: '', blood_group: '', about_me: '',
+        city: '', state: '', country: '',
+        profile_for: '', managed_by: '', family_type: '',
+        father_occupation: '', mother_occupation: '',
+        brothers_total: '', brothers_married: '',
+        sisters_total: '', sisters_married: '',
+        native_city: '', family_location: '', about_family: '',
+        status: 'pending' // Admin specific
+    });
+
+    useEffect(() => {
+        fetchProfile();
+    }, [userId]);
+
+    const fetchProfile = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+            if (data) {
+                setPhotoUrl(data.photo_url);
+                setPhotos(data.photos || []);
+                setFormData({ ...data, status: data.status || 'pending' });
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev: any) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        setMessage(null);
+
+        try {
+            const updates = {
+                ...formData,
+                updated_at: new Date().toISOString(),
+            };
+            // Remove id from updates if present
+            delete updates.id;
+
+            const { error } = await supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', userId);
+
+            if (error) throw error;
+            setMessage({ type: 'success', text: 'User profile updated successfully!' });
+        } catch (error: any) {
+            setMessage({ type: 'error', text: error.message || 'Failed to update' });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading) return <div className="p-8 text-center">Loading user details...</div>;
+
+    const InputGroup = ({ label, name, type = "text", options = null }: any) => (
+        <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+            {options ? (
+                <select
+                    name={name}
+                    value={formData[name] || ''}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-red-500 focus:border-red-500"
+                >
+                    <option value="">Select</option>
+                    {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+            ) : (
+                <input
+                    type={type}
+                    name={name}
+                    value={formData[name] || ''}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-red-500 focus:border-red-500"
+                />
+            )}
+        </div>
+    );
+
+    return (
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-5xl mx-auto">
+            <div className="flex justify-between items-center mb-6 border-b pb-4">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <User className="text-red-600" />
+                    Edit User: {formData.first_name} {formData.last_name}
+                </h1>
+                <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-700">
+                    <X />
+                </button>
+            </div>
+
+            {message && (
+                <div className={`p-3 rounded mb-4 ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {message.text}
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Left Panel: Status & Photo */}
+                    <div className="col-span-1 space-y-6">
+                        <div className="bg-gray-50 p-4 rounded-lg border">
+                            <h3 className="font-semibold mb-3">Account Status</h3>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                className={`w-full p-2 rounded font-bold ${formData.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                        formData.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                            'bg-red-100 text-red-800'
+                                    }`}
+                            >
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="deactivated">Deactivated</option>
+                            </select>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="relative w-48 h-48 mx-auto rounded-lg overflow-hidden border-2 border-gray-200 mb-2">
+                                {photoUrl ? (
+                                    <Image src={photoUrl} alt="Profile" fill className="object-cover" unoptimized />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full bg-gray-100">
+                                        <User size={64} className="text-gray-300" />
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-xs text-gray-500">Main Profile Photo</p>
+                        </div>
+
+                        {/* Gallery Management */}
+                        <div className="border-t pt-4">
+                            <h4 className="font-semibold mb-2 flex items-center gap-2"><ImageIcon size={16} /> Gallery</h4>
+                            <div className="grid grid-cols-3 gap-2">
+                                {photos.map((url, idx) => (
+                                    <div key={idx} className="relative aspect-square border rounded overflow-hidden group">
+                                        <Image src={url} alt="Gallery" fill className="object-cover" unoptimized />
+                                        <button
+                                            type="button"
+                                            className="absolute top-0 right-0 bg-red-500 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={async () => {
+                                                if (!confirm("Delete this photo?")) return;
+                                                const newPhotos = photos.filter(p => p !== url);
+                                                setPhotos(newPhotos);
+                                                // Update DB immediately
+                                                await supabase.from('profiles').update({ photos: newPhotos }).eq('id', userId);
+                                            }}
+                                        >
+                                            <X size={12} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Panel: Form Fields */}
+                    <div className="col-span-2 space-y-8">
+                        {/* Personal Info */}
+                        <section>
+                            <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                                <User size={20} /> Personal Info
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup label="First Name" name="first_name" />
+                                <InputGroup label="Last Name" name="last_name" />
+                                <InputGroup label="Date of Birth" name="dob" type="date" />
+                                <InputGroup label="Gender" name="gender" options={['Male', 'Female']} />
+                                <InputGroup label="Height (cm)" name="height" type="number" />
+                                <InputGroup label="Weight (kg)" name="weight" type="number" />
+                                <InputGroup label="Marital Status" name="marital_status" options={['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce']} />
+                                <InputGroup label="Profile For" name="profile_for" options={['Self', 'Son', 'Daughter', 'Brother', 'Sister', 'Relative', 'Friend']} />
+                            </div>
+                        </section>
+
+                        {/* Religion */}
+                        <section>
+                            <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                                <Users size={20} /> Religion & Community
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup label="Religion" name="religion_name" options={['Hindu', 'Muslim', 'Sikh', 'Christian', 'Jain', 'Other']} />
+                                <InputGroup label="Caste" name="caste_name" />
+                                <InputGroup label="Sub Caste" name="sub_caste_name" />
+                                <InputGroup label="Manglik" name="manglik" options={['no', 'yes', 'anshik']} />
+                            </div>
+                        </section>
+
+                        {/* Family */}
+                        <section>
+                            <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                                <Users size={20} /> Family Details
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup label="Family Type" name="family_type" options={['Nuclear', 'Joint']} />
+                                <InputGroup label="Father's Occ." name="father_occupation" />
+                                <InputGroup label="Mother's Occ." name="mother_occupation" />
+                                <InputGroup label="Native City" name="native_city" />
+                            </div>
+                        </section>
+
+                        {/* Education & Career */}
+                        <section>
+                            <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                                <GraduationCap size={20} /> Education & Career
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <InputGroup label="Degree" name="degree" />
+                                <InputGroup label="Employed In" name="employed_in" options={['Private', 'Government', 'Business', 'Self-Employed']} />
+                                <InputGroup label="Occupation" name="occupation" />
+                                <InputGroup label="Annual Income" name="annual_income" type="number" />
+                            </div>
+                        </section>
+
+                        {/* Location */}
+                        <section>
+                            <h3 className="text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                                <Users size={20} /> Location
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                                <InputGroup label="City" name="city" />
+                                <InputGroup label="State" name="state" />
+                                <InputGroup label="Country" name="country" />
+                            </div>
+                        </section>
+
+                        {/* About */}
+                        <section>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">About Me</label>
+                            <textarea
+                                name="about_me"
+                                value={formData.about_me}
+                                onChange={handleChange}
+                                className="w-full p-2 border border-gray-300 rounded h-24"
+                            />
+                        </section>
+
+                        {/* Submit */}
+                        <div className="pt-4 border-t flex justify-end gap-4">
+                            <button
+                                type="button"
+                                onClick={() => router.back()}
+                                className="px-6 py-2 border rounded text-gray-700 hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                            >
+                                {saving ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+}

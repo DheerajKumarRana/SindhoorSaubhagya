@@ -36,6 +36,51 @@ const ContactUs = () => {
     // Duplicate for smooth loop
     const marqueeData = [...testimonials, ...testimonials, ...testimonials];
 
+    const [enquiry, setEnquiry] = React.useState({
+        name: '',
+        phone: '',
+        email: '',
+        message: ''
+    });
+    const [isSubmitted, setIsSubmitted] = React.useState(false);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+    const handleEnquiryChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setEnquiry({ ...enquiry, [e.target.name]: e.target.value });
+    };
+
+    const handleEnquirySubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0GynOM8OnThBLPXIhBmcwul8ghzX-toB4nQW5BJofPvCNaZIctto2hgxa3o7YezvJ/exec';
+
+        try {
+            // Using 'no-cors' mode with 'text/plain' content type to avoid CORS preflight issues with Google Apps Script
+            // The script parses e.postData.contents, so sending JSON string as text/plain works.
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(enquiry),
+            });
+
+            // Since mode is 'no-cors', we won't get a readable response status,
+            // but if it didn't throw network error, we assume success.
+            setIsSubmitted(true);
+            setEnquiry({ name: '', phone: '', email: '', message: '' });
+        } catch (error) {
+            console.error("Error submitting enquiry:", error);
+            alert("Something went wrong. Please try again later.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
+
     return (
         <section className={styles.section}>
             {/* Header */}
@@ -103,41 +148,78 @@ const ContactUs = () => {
                 <Image src="/rainbow992.png" alt="Rainbow Background" fill style={{ objectFit: 'contain' }} />
             </div>
 
-            {/* 3. Registration Form */}
+            {/* 3. Enquiry Form */}
+            {/* 3. Enquiry Form */}
             <div className={styles.formLayer}>
                 <div className={styles.formCard}>
-                    <h3 className={styles.formTitle}>Register and find your soulmate</h3>
+                    <h3 className={styles.formTitle}>Enter your enquiry</h3>
 
-                    <form>
-                        <div className={styles.formGroup}>
-                            <span className={styles.inputLabel} style={{ top: '-8px', fontSize: '0.75rem' }}>Create Profile for</span>
-                            <select className={styles.formSelect} defaultValue="">
-                                <option value="" disabled>Select Profile For</option>
-                                <option value="self">Self</option>
-                                <option value="son">Son</option>
-                                <option value="daughter">Daughter</option>
-                                <option value="brother">Brother</option>
-                                <option value="sister">Sister</option>
-                                <option value="friend">Friend</option>
-                            </select>
+                    {isSubmitted ? (
+                        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '20px' }}>✅</div>
+                            <h3 style={{ color: '#2E7D32', marginBottom: '10px' }}>Thank you!</h3>
+                            <p style={{ fontSize: '1.1rem', color: '#555' }}>We will reach you in 24 to 48 hrs.</p>
                         </div>
+                    ) : (
+                        <form onSubmit={handleEnquirySubmit}>
+                            <div className={styles.formGroup}>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Name"
+                                    className={styles.formInput}
+                                    value={enquiry.name}
+                                    onChange={handleEnquiryChange}
+                                    required
+                                />
+                            </div>
 
-                        <div className={styles.formGroup}>
-                            <input type="email" placeholder="Email address" className={styles.formInput} />
-                        </div>
+                            <div className={styles.formGroup}>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    placeholder="Phone Number"
+                                    className={styles.formInput}
+                                    value={enquiry.phone}
+                                    onChange={handleEnquiryChange}
+                                    required
+                                />
+                            </div>
 
-                        <div className={styles.formGroup}>
-                            <input type="tel" placeholder="Phone number" className={styles.formInput} />
-                        </div>
+                            <div className={styles.formGroup}>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email (Gmail)"
+                                    className={styles.formInput}
+                                    value={enquiry.email}
+                                    onChange={handleEnquiryChange}
+                                    required
+                                />
+                            </div>
 
-                        <div className={styles.formGroup}>
-                            <input type="password" placeholder="Create Password" className={styles.formInput} />
-                        </div>
+                            <div className={styles.formGroup}>
+                                <textarea
+                                    name="message"
+                                    placeholder="Enter your enquiry"
+                                    className={styles.formInput}
+                                    style={{ height: '100px', paddingTop: '10px', resize: 'vertical' }}
+                                    value={enquiry.message}
+                                    onChange={handleEnquiryChange}
+                                    required
+                                />
+                            </div>
 
-                        <button type="submit" className={styles.btnRegister}>
-                            Register for free
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                className={styles.btnRegister}
+                                disabled={isSubmitting}
+                                style={{ opacity: isSubmitting ? 0.7 : 1 }}
+                            >
+                                {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
+                            </button>
+                        </form>
+                    )}
                 </div>
             </div>
 

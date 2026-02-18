@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --primary-red: #D32F2F;
   --primary-red-hover: #b71c1c;

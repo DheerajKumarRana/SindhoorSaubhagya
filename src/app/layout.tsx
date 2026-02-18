@@ -29,6 +29,10 @@ import GlobalModals from "@/components/GlobalModals";
 
 // ... existing imports
 
+import Navbar from "@/components/Navbar/Navbar";
+
+// ... existing imports
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,6 +46,7 @@ export default function RootLayout({
         <AuthProvider>
           <ModalProvider>
             <GlobalModals />
+            <Navbar />
             {children}
           </ModalProvider>
         </AuthProvider>

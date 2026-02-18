@@ -7,13 +7,21 @@ import { X } from 'lucide-react';
 import styles from './Navbar.module.css';
 import { useModal } from '@/context/ModalContext';
 
+import { usePathname } from 'next/navigation';
+
 const Navbar = () => {
     const { openLogin } = useModal();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
+
+    // Hide Navbar on Admin pages
+    if (pathname?.startsWith('/admin')) {
+        return null;
+    }
 
     return (
         <>
@@ -49,7 +57,7 @@ const Navbar = () => {
                     {/* Desktop Auth Buttons */}
                     <div className={styles.authButtons}>
                         <button className={styles.btnLogin} onClick={openLogin}>Login</button>
-                        <Link href="/contact" className={styles.btnContact}>Contact Us</Link>
+                        <Link href="/register" className={styles.btnContact}>Register</Link>
                     </div>
 
                     {/* Mobile Menu Button - Using custom Frame.png */}
@@ -97,7 +105,7 @@ const Navbar = () => {
 
                     <div className={styles.mobileAuthButtons}>
                         <button className={styles.btnLogin} onClick={() => { openLogin(); toggleMobileMenu(); }}>Login</button>
-                        <Link href="/contact" className={styles.btnContact} onClick={toggleMobileMenu}>Contact Us</Link>
+                        <Link href="/register" className={styles.btnContact} onClick={toggleMobileMenu}>Register</Link>
                     </div>
                 </div>
             </nav>

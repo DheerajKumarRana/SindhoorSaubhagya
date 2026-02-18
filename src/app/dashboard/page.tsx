@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Home, Heart, Users, User, Bell, Edit, Menu } from 'lucide-react';
+import { Home, Heart, Users, User, Bell, Edit, Menu, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './dashboard.module.css';
 import { useAuth } from '@/context/AuthProvider';
@@ -77,6 +77,27 @@ export default function Dashboard() {
 
     const isPremium = profile?.is_premium || false;
 
+    const handleDeletePhoto = async (photoUrlToDelete: string) => {
+        if (!confirm("Are you sure you want to delete this photo?")) return;
+
+        try {
+            const updatedPhotos = profile.photos.filter((p: string) => p !== photoUrlToDelete);
+
+            const { error } = await supabase
+                .from('profiles')
+                .update({ photos: updatedPhotos })
+                .eq('id', user?.id);
+
+            if (error) throw error;
+
+            // Optimistic update
+            setProfile({ ...profile, photos: updatedPhotos });
+        } catch (error) {
+            console.error("Error deleting photo:", error);
+            alert("Failed to delete photo. Please try again.");
+        }
+    };
+
     if (loading || fetchingProfile) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
 
     return (
@@ -144,6 +165,37 @@ export default function Dashboard() {
                         <p>{stats.receivedRequests}</p>
                     </div>
                 </div>
+            </div>
+
+            {/* Photo Gallery */}
+            <h3 className={styles.sectionTitle}>My Photos</h3>
+            <div className={styles.gallerySection}>
+                {profile?.photos && profile.photos.length > 0 ? (
+                    <div className={styles.galleryGrid}>
+                        {profile.photos.map((photoUrl: string, index: number) => (
+                            <div key={index} className={styles.galleryItem}>
+                                <Image
+                                    src={photoUrl}
+                                    alt={`My Photo ${index + 1}`}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    unoptimized
+                                />
+                                <button
+                                    className={styles.deleteBtn}
+                                    onClick={() => handleDeletePhoto(photoUrl)}
+                                    title="Delete Photo"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className={styles.emptyGallery}>
+                        <p>No photos uploaded yet. Visit <strong>Edit Profile</strong> to manage your photos.</p>
+                    </div>
+                )}
             </div>
 
             {/* Recommended Matches */}

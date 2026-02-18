@@ -32,13 +32,15 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
             {/* Sidebar Container */}
             <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
                 <div className={styles.logoContainer}>
-                    <Image
-                        src="/logo 1.png"
-                        alt="Sindoor"
-                        width={120}
-                        height={40}
-                        style={{ objectFit: 'contain' }}
-                    />
+                    <Link href="/">
+                        <Image
+                            src="/logo 1.png"
+                            alt="Sindoor"
+                            width={120}
+                            height={40}
+                            style={{ objectFit: 'contain', cursor: 'pointer' }}
+                        />
+                    </Link>
                     <button className={styles.closeBtn} onClick={toggleSidebar}>
                         <X size={24} />
                     </button>

@@ -25,6 +25,11 @@ add column if not exists family_location text,
 add column if not exists profile_for text,
 add column if not exists looking_for text,
 add column if not exists annual_income numeric,
+add column if not exists weight numeric,
+add column if not exists body_type text,
+add column if not exists complexion text,
+add column if not exists blood_group text,
+add column if not exists photos text[],
 add column if not exists about_me text;
 
 -- Update the handle_new_user trigger to map metadata correctly
@@ -38,6 +43,10 @@ begin
     gender,
     date_of_birth,
     height,
+    weight,
+    body_type,
+    complexion,
+    blood_group,
     marital_status,
     mother_tongue,
     religion_name,
@@ -65,6 +74,8 @@ begin
     looking_for,
     about_me,
     phone,
+    horoscope_url,
+    photos,
     status
   )
   values (
@@ -78,6 +89,10 @@ begin
       else null 
     end,
     (new.raw_user_meta_data->>'height')::numeric,
+    (new.raw_user_meta_data->>'weight')::numeric,
+    new.raw_user_meta_data->>'body_type',
+    new.raw_user_meta_data->>'complexion',
+    new.raw_user_meta_data->>'blood_group',
     new.raw_user_meta_data->>'marital_status',
     new.raw_user_meta_data->>'mother_tongue',
     new.raw_user_meta_data->>'religion_name',
@@ -105,8 +120,18 @@ begin
     new.raw_user_meta_data->>'looking_for',
     new.raw_user_meta_data->>'about_me',
     new.raw_user_meta_data->>'phone',
-    'pending'
+    new.raw_user_meta_data->>'horoscope_file',
+    case
+        when new.raw_user_meta_data->>'photos' is not null
+        then array(select jsonb_array_elements_text(new.raw_user_meta_data->'photos'))
+        else null
+    end,
+    'pending',
+    new.email
   );
   return new;
 end;
 $$ language plpgsql security definer;
+
+-- Add email column if not exists
+alter table public.profiles add column if not exists email text unique;

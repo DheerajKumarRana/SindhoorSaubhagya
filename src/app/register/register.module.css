@@ -1,0 +1,213 @@
+.registerContainer {
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 20px 40px;
+    /* Top padding to clear fixed navbar if applicable */
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    z-index: 0;
+}
+
+.registerContainer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/logo 1.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+    opacity: 0.05;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.formCard {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 800px;
+}
+
+.pageTitle {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-family: var(--font-primary);
+}
+
+.pageSubtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1rem;
+}
+
+.formSection {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.formSection:last-child {
+    border-bottom: none;
+}
+
+.sectionTitle {
+    font-size: 1.2rem;
+    color: #E31E24;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.input,
+.select,
+.textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+    outline: none;
+    border-color: #E31E24;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 15px;
+    background-color: #E31E24;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;
+}
+
+.submitBtn:hover {
+    background-color: #c4181d;
+}
+
+.submitBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.errorMsg {
+    color: #c4181d;
+    background-color: #ffeaea;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Photo Upload Styles */
+.photoUploadSection {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.photoUploadBox {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.photoUploadBox:hover {
+    border-color: #E31E24;
+}
+
+.photoPreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.removePhoto {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .formCard {
+        padding: 20px;
+    }
+}

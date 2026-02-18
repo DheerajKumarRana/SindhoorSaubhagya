@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import Navbar from "@/components/Navbar/Navbar";
+// import Navbar from "@/components/Navbar/Navbar"; // Removed to fix duplication
 import Hero from "@/components/Hero/Hero";
 import HowItWorks from "@/components/HowItWorks/HowItWorks";
 import WhyChooseUs from "@/components/WhyChooseUs/WhyChooseUs";
@@ -15,7 +15,7 @@ import Footer from "@/components/Footer/Footer";
 export default function Home() {
   return (
     <main className={styles.main}>
-      <Navbar />
+      {/* <Navbar /> Removed to fix duplication */}
       <Hero />
       <HowItWorks />
       <WhyChooseUs />

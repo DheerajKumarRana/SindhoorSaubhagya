@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { User, Users, GraduationCap, X } from 'lucide-react';
+import { User, Users, GraduationCap, X, Eye, Image as ImageIcon } from 'lucide-react';
 import styles from './EditProfile.module.css';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthProvider';
@@ -13,7 +13,9 @@ const EditProfileForm = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false); // New state for tracking save status
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [showLightbox, setShowLightbox] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -24,14 +26,14 @@ const EditProfileForm = () => {
         height: '',
         weight: '',
         marital_status: '',
-        religion_id: '',
-        caste_id: '',
         mother_tongue: '',
+        religion_name: '',
+        caste_name: '',
+        sub_caste_name: '',
         manglik: 'no',
-        education: {} as any,
-        profession: {} as any,
-        highest_education: '',
-        profession_title: '',
+        degree: '',
+        occupation: '',
+        employed_in: '',
         annual_income: '',
         complexion: '',
         body_type: '',
@@ -39,48 +41,37 @@ const EditProfileForm = () => {
         about_me: '',
         city: '',
         state: '',
-        country: 'India'
+        country: 'India',
+
+        // New Registration Fields
+        profile_for: '',
+        managed_by: '',
+        family_type: '',
+        father_occupation: '',
+        mother_occupation: '',
+        brothers_total: '',
+        brothers_married: '',
+        sisters_total: '',
+        sisters_married: '',
+        native_city: '',
+        family_location: '',
+        about_family: ''
     });
 
-    const [religions, setReligions] = useState<any[]>([]);
-    const [castes, setCastes] = useState<any[]>([]);
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+    const [photos, setPhotos] = useState<string[]>([]); // Added for gallery sync
+
 
     useEffect(() => {
-        fetchReligions();
         if (user) {
             fetchProfile();
         }
     }, [user]);
 
-    useEffect(() => {
-        if (formData.religion_id) {
-            fetchCastes(formData.religion_id);
-        } else {
-            setCastes([]);
-        }
-    }, [formData.religion_id]);
 
-    const fetchReligions = async () => {
-        const { data, error } = await supabase
-            .from('religions')
-            .select('id, name')
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
 
-        if (data) setReligions(data);
-    };
 
-    const fetchCastes = async (religionId: string) => {
-        const { data, error } = await supabase
-            .from('castes')
-            .select('id, name')
-            .eq('religion_id', religionId)
-            .eq('is_active', true)
-            .order('display_order', { ascending: true });
 
-        if (data) setCastes(data);
-    };
 
     const fetchProfile = async () => {
         try {
@@ -90,7 +81,14 @@ const EditProfileForm = () => {
                 .eq('id', user?.id)
                 .single();
 
+            console.log("DEBUG: fetchProfile data:", data);
+            console.log("DEBUG: fetchProfile error:", error);
+            console.log("DEBUG: current user id:", user?.id);
+
             if (data) {
+                setPhotoUrl(data.photo_url);
+                setPhotos(data.photos || []); // Fetch photos array
+
                 setFormData({
                     first_name: data.first_name || '',
                     last_name: data.last_name || '',
@@ -99,22 +97,35 @@ const EditProfileForm = () => {
                     height: data.height ? data.height.toString() : '',
                     weight: data.weight ? data.weight.toString() : '',
                     marital_status: data.marital_status || '',
-                    religion_id: data.religion_id || '',
-                    caste_id: data.caste_id || '',
+                    religion_name: data.religion_name || '',
+                    caste_name: data.caste_name || '',
+                    sub_caste_name: data.sub_caste_name || '',
                     mother_tongue: data.mother_tongue || '',
-                    manglik: data.horoscope?.manglik || 'no',
-                    education: data.education || {},
-                    profession: data.profession || {},
-                    highest_education: data.education?.highest || '',
-                    profession_title: data.profession?.title || '',
+                    manglik: data.manglik || 'no',
+                    degree: data.degree || '',
+                    occupation: data.occupation || '',
+                    employed_in: data.employed_in || '',
                     annual_income: data.annual_income ? data.annual_income.toString() : '',
                     complexion: data.complexion || '',
                     body_type: data.body_type || '',
                     blood_group: data.blood_group || '',
                     about_me: data.about_me || '',
-                    city: data.location?.city || '',
-                    state: data.location?.state || '',
-                    country: data.location?.country || 'India'
+                    city: data.city || '',
+                    state: data.state || '',
+                    country: data.country || 'India',
+
+                    profile_for: data.profile_for || '',
+                    managed_by: data.managed_by || '',
+                    family_type: data.family_type || '',
+                    father_occupation: data.father_occupation || '',
+                    mother_occupation: data.mother_occupation || '',
+                    brothers_total: data.brothers_total !== null ? data.brothers_total.toString() : '',
+                    brothers_married: data.brothers_married !== null ? data.brothers_married.toString() : '',
+                    sisters_total: data.sisters_total !== null ? data.sisters_total.toString() : '',
+                    sisters_married: data.sisters_married !== null ? data.sisters_married.toString() : '',
+                    native_city: data.native_city || '',
+                    family_location: data.family_location || '',
+                    about_family: data.about_family || '' // Note: about_family wasn't in schema but we should check if we need to add it or if it's there
                 });
                 setPhotoUrl(data.photo_url);
             }
@@ -125,17 +136,20 @@ const EditProfileForm = () => {
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        setSaved(false); // Reset saved state on any change
     };
 
     const handleManglikChange = (value: string) => {
         setFormData(prev => ({ ...prev, manglik: value }));
+        setSaved(false);
     };
 
     const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
+        setSaved(false);
 
         const file = e.target.files[0];
         const fileExt = file.name.split('.').pop();
@@ -157,14 +171,21 @@ const EditProfileForm = () => {
                 .getPublicUrl(filePath);
 
             // Update Profile
+            // Append new photo to gallery
+            const updatedPhotos = [...(photos || []), publicUrl];
+
             const { error: updateError } = await supabase
                 .from('profiles')
-                .update({ photo_url: publicUrl })
+                .update({
+                    photo_url: publicUrl,
+                    photos: updatedPhotos // Sync with gallery
+                })
                 .eq('id', user?.id);
 
             if (updateError) throw updateError;
 
             setPhotoUrl(publicUrl);
+            setPhotos(updatedPhotos); // Update local state
             setMessage({ type: 'success', text: 'Photo updated successfully!' });
 
         } catch (error: any) {
@@ -181,31 +202,49 @@ const EditProfileForm = () => {
         setMessage(null);
 
         try {
-            // Construct update object - separate jsonb fields
+            // Construct update object - using flat fields matching Registration
             const updates = {
                 first_name: formData.first_name,
                 last_name: formData.last_name,
                 gender: formData.gender,
-                date_of_birth: formData.dob || null, // handle empty string
+                date_of_birth: formData.dob || null,
                 height: formData.height ? parseFloat(formData.height) : null,
                 weight: formData.weight ? parseFloat(formData.weight) : null,
                 marital_status: formData.marital_status,
                 mother_tongue: formData.mother_tongue,
-                religion_id: formData.religion_id || null,
-                caste_id: formData.caste_id || null,
+                religion_name: formData.religion_name,
+                caste_name: formData.caste_name,
+                sub_caste_name: formData.sub_caste_name,
+                manglik: formData.manglik,
+
+                degree: formData.degree,
+                occupation: formData.occupation,
+                employed_in: formData.employed_in,
                 annual_income: formData.annual_income ? parseFloat(formData.annual_income) : null,
+
                 complexion: formData.complexion,
                 body_type: formData.body_type,
                 blood_group: formData.blood_group,
                 about_me: formData.about_me,
-                location: {
-                    city: formData.city,
-                    state: formData.state,
-                    country: formData.country
-                },
-                education: { highest: formData.highest_education },
-                profession: { title: formData.profession_title },
-                horoscope: { manglik: formData.manglik },
+
+                city: formData.city,
+                state: formData.state,
+                country: formData.country,
+
+                // New Fields
+                profile_for: formData.profile_for,
+                managed_by: formData.managed_by,
+                family_type: formData.family_type,
+                father_occupation: formData.father_occupation,
+                mother_occupation: formData.mother_occupation,
+                brothers_total: formData.brothers_total ? parseInt(formData.brothers_total) : 0,
+                brothers_married: formData.brothers_married ? parseInt(formData.brothers_married) : 0,
+                sisters_total: formData.sisters_total ? parseInt(formData.sisters_total) : 0,
+                sisters_married: formData.sisters_married ? parseInt(formData.sisters_married) : 0,
+                native_city: formData.native_city,
+                family_location: formData.family_location,
+                about_family: formData.about_family, // Uncommented
+
                 updated_at: new Date().toISOString(),
             };
 
@@ -216,6 +255,7 @@ const EditProfileForm = () => {
 
             if (error) throw error;
 
+            setSaved(true);
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
             // Optionally redirect after delay
         } catch (error: any) {
@@ -264,21 +304,30 @@ const EditProfileForm = () => {
                     <div className={styles.formGrid}>
                         {/* Left Column: Photo */}
                         <div className={styles.photoColumn}>
-                            {photoUrl ? (
-                                <Image
-                                    src={photoUrl}
-                                    alt="Profile"
-                                    width={150}
-                                    height={150}
-                                    className={styles.profileImage}
-                                    style={{ objectFit: 'cover' }}
-                                    unoptimized
-                                />
-                            ) : (
-                                <div className={`${styles.profileImage} ${styles.avatarPlaceholder}`}>
-                                    <User size={64} color="#ccc" />
-                                </div>
-                            )}
+                            <div className={styles.imageWrapper}>
+                                {photoUrl ? (
+                                    <Image
+                                        src={photoUrl}
+                                        alt="Profile"
+                                        fill
+                                        className={styles.profileImage}
+                                        style={{ objectFit: 'cover' }}
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <div className={`${styles.profileImage} ${styles.avatarPlaceholder}`}>
+                                        <User size={64} color="#ccc" />
+                                    </div>
+                                )}
+                                <button
+                                    type="button"
+                                    className={styles.viewProfileBtn}
+                                    onClick={() => setShowLightbox(true)}
+                                    title="View Photo"
+                                >
+                                    <Eye size={20} />
+                                </button>
+                            </div>
                             <label className={styles.changePhotoBtn}>
                                 Change Photo
                                 <input
@@ -293,6 +342,39 @@ const EditProfileForm = () => {
 
                         {/* Right Column: Fields */}
                         <div className={styles.fieldsGrid}>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Profile For</label>
+                                <select
+                                    name="profile_for"
+                                    className={styles.select}
+                                    value={formData.profile_for}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="self">Self</option>
+                                    <option value="son">Son</option>
+                                    <option value="daughter">Daughter</option>
+                                    <option value="sister">Sister</option>
+                                    <option value="brother">Brother</option>
+                                    <option value="friend">Relative/Friend</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Managed By</label>
+                                <select
+                                    name="managed_by"
+                                    className={styles.select}
+                                    value={formData.managed_by}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="self">Self</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="sibling">Sibling</option>
+                                    <option value="relative">Relative</option>
+                                </select>
+                            </div>
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>First Name</label>
                                 <input
@@ -335,9 +417,8 @@ const EditProfileForm = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                             </div>
                             <div className={styles.formGroup}>
@@ -377,60 +458,51 @@ const EditProfileForm = () => {
                         Religion & Community
                     </div>
                     <div className={styles.fieldsGrid}>
-                        {/* 
-                            Ideally these selects should be populated from 'religions' and 'castes' tables. 
-                            For MVP, using text inputs or minimal static options if IDs are not strictly enforced by UI dropdowns yet.
-                            Or fetching master data. Let's keep it simple for now or assume IDs.
-                            Actually the schema has UUIDs. If we send text it will fail.
-                            For now, let's use a read-only or basic static mapping if known, or text input for 'Mother Tongue'.
-                        */}
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Religion</label>
                             <select
-                                name="religion_id"
+                                name="religion_name"
                                 className={styles.select}
-                                value={formData.religion_id}
+                                value={formData.religion_name}
                                 onChange={handleChange}
                             >
                                 <option value="">Select Religion</option>
-                                {religions.map(r => (
-                                    <option key={r.id} value={r.id}>{r.name}</option>
-                                ))}
+                                <option value="Hindu">Hindu</option>
+                                <option value="Muslim">Muslim</option>
+                                <option value="Sikh">Sikh</option>
+                                <option value="Christian">Christian</option>
+                                <option value="Jain">Jain</option>
                             </select>
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Caste</label>
-                            <select
-                                name="caste_id"
-                                className={styles.select}
-                                value={formData.caste_id}
+                            <input
+                                type="text"
+                                name="caste_name"
+                                className={styles.input}
+                                value={formData.caste_name}
                                 onChange={handleChange}
-                                disabled={!formData.religion_id}
-                            >
-                                <option value="">Select Caste</option>
-                                {castes.map(c => (
-                                    <option key={c.id} value={c.id}>{c.name}</option>
-                                ))}
-                            </select>
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Sub Caste</label>
+                            <input
+                                type="text"
+                                name="sub_caste_name"
+                                className={styles.input}
+                                value={formData.sub_caste_name}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Mother Tongue</label>
-                            <select
+                            <input
+                                type="text"
                                 name="mother_tongue"
-                                className={styles.select}
+                                className={styles.input}
                                 value={formData.mother_tongue}
                                 onChange={handleChange}
-                            >
-                                <option value="">Select</option>
-                                <option value="Hindi">Hindi</option>
-                                <option value="English">English</option>
-                                <option value="Gujarati">Gujarati</option>
-                                <option value="Marathi">Marathi</option>
-                                <option value="Punjabi">Punjabi</option>
-                                <option value="Tamil">Tamil</option>
-                                <option value="Telugu">Telugu</option>
-                                <option value="Bengali">Bengali</option>
-                            </select>
+                            />
                         </div>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Manglik Status</label>
@@ -462,6 +534,71 @@ const EditProfileForm = () => {
                     </div>
                 </div>
 
+                {/* Family Details Section */}
+                <div className={styles.section}>
+                    <div className={styles.sectionTitle}>
+                        <Users size={20} color="#E31E24" />
+                        Family Details
+                    </div>
+                    <div className={styles.fieldsGrid}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Family Type</label>
+                            <select
+                                name="family_type"
+                                className={styles.select}
+                                value={formData.family_type}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select</option>
+                                <option value="Nuclear">Nuclear</option>
+                                <option value="Joint">Joint</option>
+                            </select>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Native City</label>
+                            <input type="text" name="native_city" className={styles.input} value={formData.native_city} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Father's Occupation</label>
+                            <input type="text" name="father_occupation" className={styles.input} value={formData.father_occupation} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Mother's Occupation</label>
+                            <input type="text" name="mother_occupation" className={styles.input} value={formData.mother_occupation} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Brothers (Total)</label>
+                            <input type="number" name="brothers_total" className={styles.input} value={formData.brothers_total} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Brothers (Married)</label>
+                            <input type="number" name="brothers_married" className={styles.input} value={formData.brothers_married} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Sisters (Total)</label>
+                            <input type="number" name="sisters_total" className={styles.input} value={formData.sisters_total} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Sisters (Married)</label>
+                            <input type="number" name="sisters_married" className={styles.input} value={formData.sisters_married} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
+                            <label className={styles.label}>Family Location</label>
+                            <input type="text" name="family_location" className={styles.input} value={formData.family_location} onChange={handleChange} />
+                        </div>
+                        <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
+                            <label className={styles.label}>About Family</label>
+                            <textarea
+                                name="about_family"
+                                className={styles.input}
+                                style={{ minHeight: '80px', resize: 'vertical' }}
+                                value={formData.about_family}
+                                onChange={(e: any) => handleChange(e as any)}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {/* Education & Career Section */}
                 <div className={styles.section}>
                     <div className={styles.sectionTitle}>
@@ -470,36 +607,39 @@ const EditProfileForm = () => {
                     </div>
                     <div className={styles.fieldsGrid}>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Highest Education</label>
+                            <label className={styles.label}>Highest Degree</label>
+                            <input
+                                type="text"
+                                name="degree"
+                                className={styles.input}
+                                value={formData.degree}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label}>Employed In</label>
                             <select
-                                name="highest_education"
+                                name="employed_in"
                                 className={styles.select}
-                                value={formData.highest_education}
+                                value={formData.employed_in}
                                 onChange={handleChange}
                             >
                                 <option value="">Select</option>
-                                <option value="High School">High School</option>
-                                <option value="Bachelors">Bachelors</option>
-                                <option value="Masters">Masters</option>
-                                <option value="Doctorate">Doctorate</option>
+                                <option value="Private">Private</option>
+                                <option value="Government">Government</option>
+                                <option value="Business">Business</option>
+                                <option value="Self-Employed">Self Employed</option>
                             </select>
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Profession</label>
-                            <select
-                                name="profession_title"
-                                className={styles.select}
-                                value={formData.profession_title}
+                            <label className={styles.label}>Occupation</label>
+                            <input
+                                type="text"
+                                name="occupation"
+                                className={styles.input}
+                                value={formData.occupation}
                                 onChange={handleChange}
-                            >
-                                <option value="">Select</option>
-                                <option value="Software Developer">Software Developer</option>
-                                <option value="Doctor">Doctor</option>
-                                <option value="Engineer">Engineer</option>
-                                <option value="Teacher">Teacher</option>
-                                <option value="Business">Business</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            />
                         </div>
                     </div>
                 </div>
@@ -603,14 +743,112 @@ const EditProfileForm = () => {
                 </div>
 
                 {/* Footer Actions */}
+                <div className={styles.section}>
+                    <div className={styles.sectionTitle}>
+                        <ImageIcon size={20} color="#E31E24" />
+                        My Photos
+                    </div>
+                    <div className={styles.galleryGrid}>
+                        {photos.map((photo, index) => (
+                            <div key={index} className={styles.galleryItem}>
+                                <Image
+                                    src={photo}
+                                    alt={`Gallery ${index}`}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                    unoptimized
+                                />
+                                <button
+                                    type="button"
+                                    className={styles.deleteBtn}
+                                    onClick={async () => {
+                                        if (!confirm("Delete this photo?")) return;
+                                        const newPhotos = photos.filter(p => p !== photo);
+                                        setPhotos(newPhotos);
+                                        // Update immediately or wait for save?
+                                        // Immediate update for gallery is better UX usually, but here form saves on submit.
+                                        // But delete usually expects immediate effect.
+                                        // Let's do immediate update to DB to match Dashboard behavior.
+                                        try {
+                                            await supabase.from('profiles').update({ photos: newPhotos }).eq('id', user?.id);
+                                            setMessage({ type: 'success', text: 'Photo deleted' });
+                                        } catch (e) {
+                                            console.error(e);
+                                            setMessage({ type: 'error', text: 'Failed to delete' });
+                                        }
+                                    }}
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ))}
+                        <label className={styles.addPhotoCard}>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                hidden
+                                onChange={async (e) => {
+                                    if (e.target.files) {
+                                        setSaving(true);
+                                        try {
+                                            const newUrls = [];
+                                            for (let i = 0; i < e.target.files.length; i++) {
+                                                const file = e.target.files[i];
+                                                const filePath = `${user?.id}-${Date.now()}-${i}.${file.name.split('.').pop()}`;
+                                                await supabase.storage.from('profile-photos').upload(filePath, file);
+                                                const { data: { publicUrl } } = supabase.storage.from('profile-photos').getPublicUrl(filePath);
+                                                newUrls.push(publicUrl);
+                                            }
+                                            const updatedPhotos = [...photos, ...newUrls];
+                                            setPhotos(updatedPhotos);
+                                            await supabase.from('profiles').update({ photos: updatedPhotos }).eq('id', user?.id);
+                                            setMessage({ type: 'success', text: 'Photos uploaded!' });
+                                        } catch (err) {
+                                            console.error(err);
+                                        } finally {
+                                            setSaving(false);
+                                        }
+                                    }
+                                }}
+                            />
+                            <div style={{ fontSize: '2rem', color: '#ccc' }}>+</div>
+                            <span style={{ fontSize: '0.9rem', color: '#888' }}>Add Photos</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div className={styles.footerActions}>
                     <button type="button" className={styles.cancelBtn} onClick={() => router.push('/dashboard')}>
                         Cancel
                     </button>
-                    <button type="submit" className={styles.saveBtn} disabled={saving}>
-                        {saving ? 'Saving...' : 'Save Changes'}
+                    <button type="submit" className={styles.saveBtn} disabled={saving || saved}>
+                        {saving ? 'Saving...' : saved ? 'Saved' : 'Save Changes'}
                     </button>
                 </div>
+
+                {/* Lightbox */}
+                {showLightbox && (
+                    <div className={styles.lightboxOverlay} onClick={() => setShowLightbox(false)}>
+                        <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
+                            <button type="button" className={styles.closeLightbox} onClick={() => setShowLightbox(false)}>
+                                <X size={24} />
+                            </button>
+                            {photoUrl ? (
+                                <Image
+                                    src={photoUrl}
+                                    alt="Profile Full View"
+                                    width={500}
+                                    height={500}
+                                    style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '80vh' }}
+                                    unoptimized
+                                />
+                            ) : (
+                                <div style={{ padding: '20px', color: 'white' }}>No photo available</div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </form>
         </div>
     );
