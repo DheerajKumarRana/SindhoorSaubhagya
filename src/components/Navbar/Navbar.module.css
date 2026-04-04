@@ -318,6 +318,17 @@
     padding: 12px;
 }
 
+.mobileAuthButtons .btnLogin,
+.mobileAuthButtons .btnContact {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+}
+
 .mobileAuthButtons .accountBadge {
     width: 100%;
     max-width: none;

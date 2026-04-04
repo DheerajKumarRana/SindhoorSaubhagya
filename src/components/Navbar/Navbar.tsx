@@ -156,13 +156,15 @@ const Navbar = () => {
 
                 <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
                     <div className={styles.mobileCloseHeader}>
-                        <Image
-                            src="/logo 1.png"
-                            alt="Sindoor"
-                            width={120}
-                            height={40}
-                            style={{ objectFit: 'contain' }}
-                        />
+                        <Link href="/" onClick={toggleMobileMenu}>
+                            <Image
+                                src="/logo 1.png"
+                                alt="Sindoor"
+                                width={120}
+                                height={40}
+                                style={{ objectFit: 'contain' }}
+                            />
+                        </Link>
                         <button onClick={toggleMobileMenu} className={styles.mobileCloseBtn}>
                             <X size={28} />
                         </button>
