@@ -187,12 +187,19 @@
     padding: 20px;
     position: relative;
     overflow: hidden;
+    min-height: 190px;
+}
+
+.interestedSectionLocked {
+    display: flex;
+    align-items: stretch;
 }
 
 .interestedList {
     filter: blur(5px);
     pointer-events: none;
     user-select: none;
+    min-height: 150px;
 }
 
 .interestedListVisible {
@@ -214,7 +221,14 @@
     justify-content: center;
     z-index: 10;
     text-align: center;
-    padding: 20px;
+    padding: 24px;
+}
+
+.overlayTitle {
+    margin: 0;
+    color: #111827;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .overlayMessage {

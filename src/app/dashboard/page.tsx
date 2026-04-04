@@ -19,16 +19,6 @@ interface DashboardProfile {
     status?: string | null;
 }
 
-interface MatchProfile {
-    id: string;
-    first_name: string | null;
-    last_name: string | null;
-    date_of_birth: string | null;
-    photo_url: string | null;
-    profession: { title?: string } | string | null;
-    location: { city?: string } | string | null;
-}
-
 interface InterestedProfile {
     id: string;
     first_name: string | null;
@@ -54,18 +44,11 @@ const getAge = (dateOfBirth: string | null) => {
     return age;
 };
 
-const getTextValue = (value: { title?: string; city?: string } | string | null | undefined, key: 'title' | 'city', fallback: string) => {
-    if (!value) return fallback;
-    if (typeof value === 'string') return value;
-    return value[key] || fallback;
-};
-
 export default function Dashboard() {
     const { user, profile: authProfile, loading, refreshSession } = useAuth();
     const router = useRouter();
     const [profile, setProfile] = React.useState<DashboardProfile | null>(null);
     const [stats, setStats] = React.useState({ views: 0, acceptedInterests: 0, receivedRequests: 0 });
-    const [matches, setMatches] = React.useState<MatchProfile[]>([]);
     const [interestedProfiles, setInterestedProfiles] = React.useState<InterestedProfile[]>([]);
     const { signOut } = useAuth(); // Correctly extracting here
     const [authChecked, setAuthChecked] = React.useState(false);
@@ -136,17 +119,6 @@ export default function Dashboard() {
                     console.error("Interested profiles fetch error", e);
                     setInterestedProfiles([]);
                 }
-
-                const { data: matchesData, error: matchErr } = await supabase
-                    .from('profiles')
-                    .select('id, first_name, last_name, date_of_birth, photo_url, location, profession')
-                    .neq('gender', profileData?.gender || 'None')
-                    .neq('id', userId)
-                    .eq('status', 'approved')
-                    .limit(4);
-
-                if (matchErr) console.error("Dashboard match error:", matchErr);
-                if (matchesData) setMatches(matchesData);
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
             }
@@ -357,38 +329,12 @@ export default function Dashboard() {
                     </div>
                 )}
             </div>
-
-            {/* Recommended Matches */}
-            <h3 className={styles.sectionTitle}>Recommended Matches</h3>
-            <div className={styles.recommendationsGrid}>
-                {matches.length > 0 ? matches.map((item) => (
-                    <div key={item.id} className={styles.profileCard}>
-                        <div className={styles.cardImageWrapper}>
-                            <Image
-                                src={item.photo_url || "/image 1.png"}
-                                alt="Profile"
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                unoptimized
-                            />
-                        </div>
-                        <div className={styles.cardContent}>
-                            <h4 className={styles.cardName}>{item.first_name}, {getAge(item.date_of_birth)}</h4>
-                            <p className={styles.cardDetail}>{getTextValue(item.profession, 'title', 'Member')}, {getTextValue(item.location, 'city', 'India')}</p>
-                            <Link href={`/dashboard/profile/${item.id}`} className={styles.viewProfileBtn}>View Profile</Link>
-                        </div>
-                    </div>
-                )) : (
-                    <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px', color: '#666' }}>No recommended matches found yet.</p>
-                )}
-            </div>
-
             {/* People Interested (Blurred) */}
             <h3 className={styles.sectionTitle}>People Interested</h3>
-            <div className={styles.interestedSection}>
+            <div className={`${styles.interestedSection} ${!isApprovedProfile ? styles.interestedSectionLocked : ''}`}>
                 {!isApprovedProfile ? (
                     <div className={styles.premiumOverlay}>
-                        <h3>Wait till profile approved</h3>
+                        <h3 className={styles.overlayTitle}>Wait till profile approved</h3>
                         <p className={styles.overlayMessage}>Once admin approves your profile, views and interests from other users will appear here.</p>
                     </div>
                 ) : null}
