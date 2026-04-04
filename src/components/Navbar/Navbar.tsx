@@ -21,6 +21,19 @@ const Navbar = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isMobileMenuOpen]);
+
     // Fix for "stale logout" bug when using browser back button or Next.js router cache
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
@@ -120,7 +133,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button className={styles.mobileMenuBtn} onClick={toggleMobileMenu}>
+                    <button className={styles.mobileMenuBtn} onClick={toggleMobileMenu} aria-expanded={isMobileMenuOpen}>
                         {isMobileMenuOpen ? (
                             <X size={28} />
                         ) : (
@@ -136,9 +149,10 @@ const Navbar = () => {
                 </div>
 
                 {/* Mobile Menu Overlay */}
-                {isMobileMenuOpen && (
-                    <div className={styles.mobileMenuOverlay} onClick={toggleMobileMenu}></div>
-                )}
+                <div
+                    className={`${styles.mobileMenuOverlay} ${isMobileMenuOpen ? styles.open : ''}`}
+                    onClick={toggleMobileMenu}
+                ></div>
 
                 <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
                     <div className={styles.mobileCloseHeader}>
@@ -149,7 +163,7 @@ const Navbar = () => {
                             height={40}
                             style={{ objectFit: 'contain' }}
                         />
-                        <button onClick={toggleMobileMenu} style={{ background: 'none', border: 'none', color: '#d32f2f', cursor: 'pointer' }}>
+                        <button onClick={toggleMobileMenu} className={styles.mobileCloseBtn}>
                             <X size={28} />
                         </button>
                     </div>

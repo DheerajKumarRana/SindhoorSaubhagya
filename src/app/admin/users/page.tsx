@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Search, Check, X } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type UserProfile = {
     id: string;
@@ -18,6 +19,12 @@ type UserProfile = {
 };
 
 type UserStatus = UserProfile['status'];
+
+const getStatusClasses = (status: UserStatus) => {
+    if (status === 'approved') return 'bg-green-100 text-green-800';
+    if (status === 'pending') return 'bg-orange-100 text-orange-800';
+    return 'bg-red-100 text-red-800';
+};
 
 export default function UserManagement() {
     const [users, setUsers] = useState<UserProfile[]>([]);
@@ -95,15 +102,15 @@ export default function UserManagement() {
     );
 
     return (
-        <div>
-            <div className="mb-8 rounded-[30px] border border-red-100 bg-[linear-gradient(135deg,#fff8f7_0%,#fff_56%,#fff4ef_100%)] p-8 shadow-[0_18px_42px_rgba(227,30,36,0.08)]">
+        <div className="overflow-x-hidden">
+            <div className="mb-6 rounded-[24px] border border-red-100 bg-[linear-gradient(135deg,#fff8f7_0%,#fff_56%,#fff4ef_100%)] p-5 shadow-[0_18px_42px_rgba(227,30,36,0.08)] md:mb-8 md:rounded-[30px] md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-red-500">Profiles</p>
                 <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">User Management</h1>
+                        <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">User Management</h1>
                         <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Review profile quality, move applications across approval states, and open individual records for deeper edits.</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => setFilter('all')}
                             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filter === 'all' ? 'bg-slate-900 text-white shadow-[0_14px_30px_rgba(15,23,42,0.18)]' : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'}`}
@@ -126,14 +133,9 @@ export default function UserManagement() {
                 </div>
             </div>
 
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex gap-2">
-                </div>
-            </div>
-
             <div className="overflow-hidden rounded-[28px] border border-red-100 bg-white shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
                 {/* Search Bar */}
-                <div className="flex items-center gap-2 border-b border-red-50 bg-[#fffaf9] p-5">
+                <div className="flex items-center gap-2 border-b border-red-50 bg-[#fffaf9] p-4 md:p-5">
                     <Search className="text-gray-400 w-5 h-5" />
                     <input
                         type="text"
@@ -144,8 +146,8 @@ export default function UserManagement() {
                     />
                 </div>
 
-                {/* Table */}
-                <div className="overflow-x-auto">
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left text-sm text-gray-600">
                         <thead className="bg-[#fff7f5] text-gray-800 font-semibold uppercase tracking-wider text-xs">
                             <tr>
@@ -164,7 +166,7 @@ export default function UserManagement() {
                                 filteredUsers.map((user) => (
                                     <tr key={user.id} className="transition-colors hover:bg-[#fffaf9]">
                                         <td className="px-6 py-4">
-                                            <a href={`/admin/users/${user.id}`} className="block group">
+                                            <Link href={`/admin/users/${user.id}`} className="block group">
                                                 <div className="flex items-center gap-3 group-hover:opacity-80 transition-opacity">
                                                     <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-red-100">
                                                         {user.photo_url ? (
@@ -178,13 +180,10 @@ export default function UserManagement() {
                                                         <p className="text-xs text-gray-400">{user.email || 'No email'}</p>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize
-                            ${user.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                                    user.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                                        'bg-red-100 text-red-800'}`}>
+                                            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize ${getStatusClasses(user.status)}`}>
                                                 {user.status}
                                             </span>
                                         </td>
@@ -219,6 +218,60 @@ export default function UserManagement() {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden px-3 py-3 space-y-3">
+                    {loading ? (
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center text-sm text-slate-500">Loading users...</div>
+                    ) : filteredUsers.length === 0 ? (
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center text-sm text-slate-500">No users found.</div>
+                    ) : (
+                        filteredUsers.map((user) => (
+                            <article key={user.id} className="rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_24px_rgba(15,23,42,0.06)]">
+                                <Link href={`/admin/users/${user.id}`} className="flex items-center gap-3">
+                                    <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-red-100">
+                                        {user.photo_url ? (
+                                            <Image src={user.photo_url} alt="User" fill className="object-cover" unoptimized />
+                                        ) : (
+                                            <span className="flex items-center justify-center h-full text-xs text-gray-500">N/A</span>
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-semibold text-slate-900 truncate">{user.first_name} {user.last_name}</p>
+                                        <p className="text-xs text-slate-500 truncate">{user.email || 'No email'}</p>
+                                        <p className="mt-1 text-[11px] text-slate-400">{new Date(user.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                </Link>
+
+                                <div className="mt-3 flex items-center justify-between gap-2">
+                                    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize ${getStatusClasses(user.status)}`}>
+                                        {user.status}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        {user.status !== 'approved' && (
+                                            <button
+                                                onClick={() => handleStatusChange(user.id, 'approved')}
+                                                className="rounded-xl bg-green-50 p-2 text-green-600 hover:bg-green-100"
+                                                title="Approve"
+                                            >
+                                                <Check className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                        {user.status !== 'rejected' && (
+                                            <button
+                                                onClick={() => handleStatusChange(user.id, 'rejected')}
+                                                className="rounded-xl bg-red-50 p-2 text-red-600 hover:bg-red-100"
+                                                title="Reject"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </article>
+                        ))
+                    )}
                 </div>
             </div>
         </div>

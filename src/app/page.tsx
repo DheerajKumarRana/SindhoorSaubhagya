@@ -10,6 +10,7 @@ import ContactUs from "@/components/ContactUs/ContactUs";
 import MatrimonyQueries from "@/components/MatrimonyQueries/MatrimonyQueries";
 import BrowseProfiles from "@/components/BrowseProfiles/BrowseProfiles";
 import Footer from "@/components/Footer/Footer";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 
 export default function Home() {
@@ -17,14 +18,14 @@ export default function Home() {
     <main className={styles.main}>
       {/* <Navbar /> Removed to fix duplication */}
       <Hero />
-      <HowItWorks />
-      <WhyChooseUs />
-      <Testimonials />
-      <Pricing />
-      <StatsOfUs />
-      <ContactUs />
-      <MatrimonyQueries />
-      <BrowseProfiles />
+      <ScrollReveal delay={40}><HowItWorks /></ScrollReveal>
+      <ScrollReveal delay={80}><WhyChooseUs /></ScrollReveal>
+      <ScrollReveal delay={120}><Testimonials /></ScrollReveal>
+      <ScrollReveal delay={140}><Pricing /></ScrollReveal>
+      <ScrollReveal delay={170}><StatsOfUs /></ScrollReveal>
+      <ScrollReveal delay={190}><ContactUs /></ScrollReveal>
+      <ScrollReveal delay={220}><MatrimonyQueries /></ScrollReveal>
+      <ScrollReveal delay={250}><BrowseProfiles /></ScrollReveal>
       <Footer />
     </main>
   );

@@ -32,9 +32,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <div className="min-h-screen bg-[linear-gradient(180deg,#fff8f7_0%,#fffdfb_38%,#f7f8fb_100%)] flex">
+            <div
+                className={`fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsSidebarOpen(false)}
+            />
+
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 w-72 border-r border-red-100/70 bg-[linear-gradient(180deg,#fff7f6_0%,#fff_34%,#fff4f2_100%)] text-slate-800 transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed inset-y-0 left-0 z-50 w-72 border-r border-red-100/70 bg-[linear-gradient(180deg,#fff7f6_0%,#fff_34%,#fff4f2_100%)] text-slate-800 transform transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     } lg:relative lg:translate-x-0 flex flex-col shadow-[0_18px_60px_rgba(227,30,36,0.08)]`}
             >
                 <div className="border-b border-red-100/80 px-6 py-6">

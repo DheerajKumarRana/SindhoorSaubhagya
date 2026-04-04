@@ -166,10 +166,13 @@ export default function MatchesPage() {
     const [fetchingMatches, setFetchingMatches] = React.useState(false);
     const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
     const formRef = React.useRef<HTMLDivElement>(null);
+    const contextLoadInFlightRef = React.useRef(false);
     const preferencesConfigured = hasConfiguredPreferences(profile?.partner_preferences);
 
     const loadMatchesContext = React.useCallback(async (userId: string) => {
-        setLoading((currentLoading) => currentLoading || !profile);
+        if (contextLoadInFlightRef.current) return;
+        contextLoadInFlightRef.current = true;
+        setLoading(true);
         try {
             const { data, error } = await supabase
                 .from('profiles')
@@ -187,8 +190,9 @@ export default function MatchesPage() {
             console.error('Matches page load error:', error);
         } finally {
             setLoading(false);
+            contextLoadInFlightRef.current = false;
         }
-    }, [profile]);
+    }, []);
 
     const fetchSuggestedMatches = React.useCallback(async (currentProfile: UserProfile, currentPreferences: PreferencesForm) => {
         if (currentProfile.status !== 'approved' || !hasConfiguredPreferences(currentProfile.partner_preferences)) {
@@ -234,7 +238,13 @@ export default function MatchesPage() {
                 return;
             }
             await refreshSession();
-            setLoading(false);
+
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user?.id) {
+                await loadMatchesContext(session.user.id);
+            } else {
+                setLoading(false);
+            }
         };
 
         void bootstrap();
