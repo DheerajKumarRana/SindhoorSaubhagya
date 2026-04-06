@@ -112,6 +112,20 @@
     box-shadow: 0 4px 12px rgba(219, 162, 87, 0.4);
 }
 
+.submitButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+    transform: none;
+    box-shadow: none;
+}
+
+.submitMessage {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffe6e6;
+}
+
 .imageCol {
     flex: 0.8;
     display: flex;
@@ -197,5 +211,9 @@
         padding: 16px;
         border-radius: 25px;
         width: 100%;
+    }
+
+    .submitMessage {
+        text-align: center;
     }
 }

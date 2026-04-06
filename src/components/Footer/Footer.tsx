@@ -5,13 +5,12 @@ import styles from './Footer.module.css';
 import Link from 'next/link';
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
-// Using existing public images for the marquee
 const GALLERY_IMAGES = [
     '/couple-traditional.png',
     '/couple-formal.png',
     '/couple_1.png',
     '/bride-phone.png',
-    '/couple-traditional.png', // Repeat for flow
+    '/couple-traditional.png',
     '/couple-formal.png',
     '/couple_1.png',
     '/bride-phone.png',
@@ -20,20 +19,17 @@ const GALLERY_IMAGES = [
 const Footer = () => {
     return (
         <footer className={styles.footer}>
-            {/* Top Red Bar */}
             <div className={styles.topBar}>
                 <span className={styles.topBarText}>
                     Find your life partner among 7 Lakhs Christian Matrimony Brides & Grooms.
                 </span>
-                <button className={styles.registerBtn}>
+                <Link href="/register" className={styles.registerBtn}>
                     Register Free
-                </button>
+                </Link>
             </div>
 
-            {/* Scrolling Marquee Gallery */}
             <div className={styles.marqueeSection}>
                 <div className={styles.marqueeContainer}>
-                    {/* Duplicating the list to ensure smooth infinite scroll */}
                     {[...GALLERY_IMAGES, ...GALLERY_IMAGES, ...GALLERY_IMAGES].map((src, index) => (
                         <div key={index} className={styles.marqueeItem}>
                             <Image
@@ -47,13 +43,10 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Main Footer Content */}
             <div className={styles.mainContent}>
-
-                {/* LET'S TALK Section */}
                 <div className={styles.letsTalkContainer}>
-                    <h2 className={styles.letsTalkText}>LET’S TALK</h2>
-                    <div className={styles.rotatingIconWrapper}>
+                    <h2 className={styles.letsTalkText}>LET&apos;S TALK</h2>
+                    <Link href="/contact" className={styles.rotatingLink} aria-label="Go to contact us">
                         <Image
                             src="/footer-scrolling-icon2.png"
                             alt="Scroll Icon"
@@ -61,10 +54,9 @@ const Footer = () => {
                             height={120}
                             className={styles.rotatingIcon}
                         />
-                    </div>
+                    </Link>
                 </div>
 
-                {/* Brand & Address */}
                 <div className={styles.bottomSection}>
                     <div className={styles.brandLogo}>
                         <Image
@@ -80,8 +72,6 @@ const Footer = () => {
                             <p>phone nos. +91 xxxxxx xxxxx</p>
                         </div>
                     </div>
-
-
 
                     <div className={styles.linksSocialRow}>
                         <nav className={styles.navLinks}>

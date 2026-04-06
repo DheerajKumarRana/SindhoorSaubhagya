@@ -121,7 +121,7 @@ const SignUpModal = ({ isOpen, onClose, onLoginClick, initialData }: SignUpModal
                     )}
 
                     <form onSubmit={handleSignUp}>
-                        {/* Email & Password (Required for Auth) */}
+                        {/* Email & Create Password (Required for Auth) */}
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Email<span className={styles.required}>*</span></label>
                             <input
@@ -134,11 +134,11 @@ const SignUpModal = ({ isOpen, onClose, onLoginClick, initialData }: SignUpModal
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Password<span className={styles.required}>*</span></label>
+                            <label className={styles.label}>Create Password<span className={styles.required}>*</span></label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    placeholder="Create a password"
+                                    placeholder="Create Password"
                                     className={styles.input}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

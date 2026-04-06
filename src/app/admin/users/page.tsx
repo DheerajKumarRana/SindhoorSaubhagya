@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { Search, Check, X } from 'lucide-react';
+import { Search, Check, X, Printer } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -211,6 +211,13 @@ export default function UserManagement() {
                                                         <X className="w-4 h-4" />
                                                     </button>
                                                 )}
+                                                <Link
+                                                    href={`/admin/users/${user.id}/print`}
+                                                    className="rounded-xl bg-slate-50 p-2 text-slate-700 hover:bg-slate-100"
+                                                    title="Print details"
+                                                >
+                                                    <Printer className="w-4 h-4" />
+                                                </Link>
                                             </div>
                                         </td>
                                     </tr>
@@ -267,6 +274,13 @@ export default function UserManagement() {
                                                 <X className="w-4 h-4" />
                                             </button>
                                         )}
+                                        <Link
+                                            href={`/admin/users/${user.id}/print`}
+                                            className="rounded-xl bg-slate-50 p-2 text-slate-700 hover:bg-slate-100"
+                                            title="Print details"
+                                        >
+                                            <Printer className="w-4 h-4" />
+                                        </Link>
                                     </div>
                                 </div>
                             </article>

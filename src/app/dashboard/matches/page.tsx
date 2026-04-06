@@ -33,7 +33,7 @@ type UserProfile = {
     last_name: string | null;
     gender: string | null;
     status: string | null;
-    partner_preferences: Partial<PreferencesForm> | null;
+    partner_preferences: Partial<PreferencesForm> | string | null;
 };
 
 type SuggestedProfile = {
@@ -106,13 +106,34 @@ const getDefaultPreferences = (gender?: string | null): PreferencesForm => ({
     city: '',
 });
 
-const normalizePreferences = (savedPreferences: Partial<PreferencesForm> | null | undefined, gender?: string | null): PreferencesForm => ({
+const coercePreferences = (savedPreferences: Partial<PreferencesForm> | string | null | undefined): Partial<PreferencesForm> | null => {
+    if (!savedPreferences) return null;
+    if (typeof savedPreferences === 'string') {
+        try {
+            const parsed = JSON.parse(savedPreferences);
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                return parsed as Partial<PreferencesForm>;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    }
+    if (typeof savedPreferences === 'object' && !Array.isArray(savedPreferences)) {
+        return savedPreferences;
+    }
+    return null;
+};
+
+const normalizePreferences = (savedPreferences: Partial<PreferencesForm> | string | null | undefined, gender?: string | null): PreferencesForm => ({
     ...getDefaultPreferences(gender),
-    ...(savedPreferences || {}),
+    ...(coercePreferences(savedPreferences) || {}),
 });
 
-const hasConfiguredPreferences = (savedPreferences: Partial<PreferencesForm> | null | undefined) =>
-    Boolean(savedPreferences && Object.entries(savedPreferences).some(([, value]) => typeof value === 'string' && value.trim() !== ''));
+const hasConfiguredPreferences = (savedPreferences: Partial<PreferencesForm> | string | null | undefined) => {
+    const coerced = coercePreferences(savedPreferences);
+    return Boolean(coerced && Object.entries(coerced).some(([, value]) => typeof value === 'string' && value.trim() !== ''));
+};
 
 const getAge = (dateOfBirth: string | null) => {
     if (!dateOfBirth) return null;
@@ -184,6 +205,7 @@ export default function MatchesPage() {
     const [isEditingPreferences, setIsEditingPreferences] = React.useState(false);
     const formRef = React.useRef<HTMLDivElement>(null);
     const contextLoadInFlightRef = React.useRef(false);
+    const manualEditModeRef = React.useRef(false);
     const preferencesConfigured = hasConfiguredPreferences(profile?.partner_preferences);
 
     const loadShortlistedProfiles = React.useCallback(async () => {
@@ -222,7 +244,11 @@ export default function MatchesPage() {
             const nextProfile = data as UserProfile;
             setProfile(nextProfile);
             setPreferences(normalizePreferences(nextProfile.partner_preferences, nextProfile.gender));
-            setIsEditingPreferences(!hasConfiguredPreferences(nextProfile.partner_preferences));
+            setIsEditingPreferences((currentState) => {
+                if (manualEditModeRef.current) return true;
+                if (currentState && !hasConfiguredPreferences(nextProfile.partner_preferences)) return true;
+                return !hasConfiguredPreferences(nextProfile.partner_preferences);
+            });
         } catch (error) {
             console.error('Matches page load error:', error);
         } finally {
@@ -347,6 +373,17 @@ export default function MatchesPage() {
         formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
+    const handleEnableEditing = () => {
+        manualEditModeRef.current = true;
+        setIsEditingPreferences(true);
+    };
+
+    const handleCancelEditing = () => {
+        manualEditModeRef.current = false;
+        setPreferences(normalizePreferences(profile?.partner_preferences, profile?.gender));
+        setIsEditingPreferences(false);
+    };
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!user?.id) return;
@@ -367,6 +404,7 @@ export default function MatchesPage() {
             if (updatedProfile) {
                 setProfile(updatedProfile);
             }
+            manualEditModeRef.current = false;
             setIsEditingPreferences(false);
 
             if (profile?.status === 'approved') {
@@ -569,13 +607,20 @@ export default function MatchesPage() {
                             <span>{isEditingPreferences ? 'These details help us score and sort stronger partner suggestions for you.' : 'Your suggestion data is locked. Click edit to update it.'}</span>
                         </div>
                         {preferencesConfigured && !isEditingPreferences ? (
-                            <button type="button" className={styles.submitButton} onClick={() => setIsEditingPreferences(true)}>
+                            <button type="button" className={styles.submitButton} onClick={handleEnableEditing}>
                                 Edit suggestion data
                             </button>
                         ) : (
-                            <button type="submit" className={styles.submitButton} disabled={saving}>
-                                {saving ? 'Saving suggestion data...' : preferencesConfigured ? 'Save updated suggestion data' : 'Save suggestion data'}
-                            </button>
+                            <div className={styles.formActions}>
+                                {preferencesConfigured && (
+                                    <button type="button" className={styles.secondaryButton} onClick={handleCancelEditing} disabled={saving}>
+                                        Cancel editing
+                                    </button>
+                                )}
+                                <button type="submit" className={styles.submitButton} disabled={saving}>
+                                    {saving ? 'Saving suggestion data...' : preferencesConfigured ? 'Save updated suggestion data' : 'Save suggestion data'}
+                                </button>
+                            </div>
                         )}
                     </div>
                 </form>

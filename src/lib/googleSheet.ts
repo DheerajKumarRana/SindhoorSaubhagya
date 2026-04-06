@@ -26,3 +26,21 @@ export const sendToGoogleSheet = async (payload: Record<string, unknown>) => {
         body,
     });
 };
+
+export const sendToGoogleSheetServer = async (payload: Record<string, unknown>) => {
+    const webhookUrl = getGoogleSheetWebhookUrl();
+    if (!webhookUrl) return;
+
+    const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: JSON.stringify(payload),
+        cache: 'no-store',
+    });
+
+    if (!response.ok) {
+        throw new Error(`Google Sheet webhook failed with status ${response.status}`);
+    }
+};

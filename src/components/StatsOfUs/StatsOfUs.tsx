@@ -1,21 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './StatsOfUs.module.css';
 import Image from 'next/image';
-
-// SVGs (CalendarIcon kept for generic use if needed, others replaced by images)
-// const StarIcon = ... removed
-// const CheckBadgeIcon = ... removed
-
-const CalendarIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="white" strokeWidth="2" />
-        <line x1="16" y1="2" x2="16" y2="6" stroke="white" strokeWidth="2" />
-        <line x1="8" y1="2" x2="8" y2="6" stroke="white" strokeWidth="2" />
-        <line x1="3" y1="10" x2="21" y2="10" stroke="white" strokeWidth="2" />
-    </svg>
-);
 
 const Bubbles = () => {
     // Generate random bubbles with fixed positions for visual stability but animated opacity
@@ -51,7 +38,11 @@ const Bubbles = () => {
 
 const StatsOfUs = () => {
     const [activeIndex, setActiveIndex] = useState(1); // Start with middle card active
-    // We have 3 items. Indices: 0, 1, 2.
+    const [ratingCount, setRatingCount] = useState(0);
+    const [yearsCount, setYearsCount] = useState(0);
+    const [profilesCount, setProfilesCount] = useState(0);
+    const hasAnimatedRef = useRef(false);
+    const sectionRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -59,6 +50,63 @@ const StatsOfUs = () => {
         }, 4000);
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const animateCounters = () => {
+            const duration = 3200;
+            const ratingTarget = 4.5;
+            const yearsTarget = 12;
+            const profilesTarget = 25000;
+            const start = performance.now();
+
+            const tick = (now: number) => {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                setRatingCount(Number((ratingTarget * eased).toFixed(1)));
+                setYearsCount(Math.round(yearsTarget * eased));
+                setProfilesCount(Math.round(profilesTarget * eased));
+
+                if (progress < 1) {
+                    requestAnimationFrame(tick);
+                } else {
+                    setRatingCount(ratingTarget);
+                    setYearsCount(yearsTarget);
+                    setProfilesCount(profilesTarget);
+                }
+            };
+
+            requestAnimationFrame(tick);
+        };
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && !hasAnimatedRef.current) {
+                        hasAnimatedRef.current = true;
+                        animateCounters();
+                    }
+                });
+            },
+            { threshold: 0.25 }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
+
+    const formatProfilesCount = (value: number) => {
+        if (value <= 0) return '0';
+        if (value < 1000) return `${value}`;
+        const compact = value / 1000;
+        const formatted = Number.isInteger(compact)
+            ? `${compact}`
+            : compact.toFixed(1).replace(/\.0$/, '');
+        return `${formatted}K`;
+    };
 
     // Helper to determine class based on relative position
     // Since we only have 3, logic is simple:
@@ -78,7 +126,7 @@ const StatsOfUs = () => {
     };
 
     return (
-        <section className={styles.section}>
+        <section className={styles.section} ref={sectionRef}>
             <div className={styles.header}>
                 <h2 className={styles.title}>
                     Stats <span className={styles.titleHighlight}>Of Us</span>
@@ -129,7 +177,7 @@ const StatsOfUs = () => {
                             style={{ objectFit: 'contain' }}
                         />
                     </div>
-                    <div className={styles.statValue}>4.5 Rating</div>
+                    <div className={styles.statValue}>{ratingCount.toFixed(1)} Rating</div>
                     <div className={styles.statDesc}>Rated among the top by our satisfied users.</div>
                 </div>
 
@@ -144,20 +192,16 @@ const StatsOfUs = () => {
                             style={{ objectFit: 'contain' }}
                         />
                     </div>
-                    <div className={styles.statValue}>12+ yrs</div>
+                    <div className={styles.statValue}>{yearsCount}+ yrs</div>
                     <div className={styles.statDesc}>Decades of insight. A legacy of excellence.</div>
                 </div>
 
                 {/* 4. Big Stats Card */}
                 <div className={`${styles.card} ${styles.bigCard}`}>
                     <div className={styles.bigCardContent}>
-                        <div className={styles.bigTitle}>25K+</div>
+                        <div className={styles.bigTitle}>{formatProfilesCount(profilesCount)}+</div>
                         <div className={styles.statDesc}>Trusted by a growing number of clients from all around the world corners</div>
                     </div>
-                    <button className={styles.bookBtn}>
-                        <CalendarIcon />
-                        Book a Call Now
-                    </button>
                 </div>
             </div>
         </section>

@@ -381,6 +381,7 @@
     justify-content: space-between;
     gap: 18px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .helperText {
@@ -566,6 +567,34 @@
 .submitButton:disabled {
     opacity: 0.72;
     cursor: wait;
+}
+
+.formActions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.secondaryButton {
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.secondaryButton:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+.secondaryButton:disabled {
+    opacity: 0.68;
+    cursor: not-allowed;
 }
 
 .popupOverlay {

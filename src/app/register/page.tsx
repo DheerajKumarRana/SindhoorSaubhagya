@@ -106,7 +106,7 @@ const RegisterPage = () => {
 
         // 1. Mandatory Fields & Format Validation
         if (!formData.email || !formData.password || !formData.firstName || !formData.phone) {
-            setError('Please fill in all required fields (Email, Password, Name, Phone).');
+            setError('Please fill in all required fields (Email, Create Password, Name, Phone).');
             window.scrollTo(0, 0);
             return;
         }
@@ -260,11 +260,12 @@ const RegisterPage = () => {
                                 <input type="tel" name="phone" className={styles.input} value={formData.phone} onChange={handleChange} required />
                             </div>
                             <div className={styles.formGroup}>
-                                <label className={styles.label}>Password</label>
+                                <label className={styles.label}>Create Password</label>
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         name="password"
+                                        placeholder="Create Password"
                                         className={styles.input}
                                         value={formData.password}
                                         onChange={handleChange}

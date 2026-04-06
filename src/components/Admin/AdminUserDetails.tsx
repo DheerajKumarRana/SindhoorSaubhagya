@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { User, Users, GraduationCap, X, Image as ImageIcon } from 'lucide-react';
+import { User, Users, GraduationCap, X, Image as ImageIcon, Printer } from 'lucide-react';
 // Reuse styles from EditProfile for consistency, or copy them if needed. 
 // Assuming we can reuse the module or similar class names.
 // For now, let's use tailwind classes for admin panel to keep it consistent with admin theme.
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminUserDetails({ userId }: { userId: string }) {
     const router = useRouter();
@@ -174,9 +175,18 @@ export default function AdminUserDetails({ userId }: { userId: string }) {
                     <User className="text-red-600" />
                     Edit User: {formData.first_name} {formData.last_name}
                 </h1>
-                <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-700">
-                    <X />
-                </button>
+                <div className="flex items-center gap-2">
+                    <Link
+                        href={`/admin/users/${userId}/print`}
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                        <Printer size={16} />
+                        Print Details
+                    </Link>
+                    <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-700">
+                        <X />
+                    </button>
+                </div>
             </div>
 
             {message && (

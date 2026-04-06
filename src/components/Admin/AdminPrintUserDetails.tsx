@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Printer, User } from 'lucide-react';
-import { useAuth } from '@/context/AuthProvider';
+import Link from 'next/link';
+import { ArrowLeft, Printer, User } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import styles from './print-details.module.css';
+import styles from '@/app/dashboard/print-details/print-details.module.css';
 
 type ProfileData = {
+    id: string;
     first_name: string | null;
     last_name: string | null;
     email: string | null;
@@ -88,36 +89,18 @@ const buildPrintableFileName = (profile: ProfileData, fallbackId: string) => {
     return `SindhoorSaubhagya_${safeName}`;
 };
 
-export default function PrintDetailsPage() {
-    const { session, user, loading: authLoading, refreshSession } = useAuth();
+export default function AdminPrintUserDetails({ userId }: { userId: string }) {
     const [profile, setProfile] = React.useState<ProfileData | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
-    const fallbackId = session?.user?.id || user?.id || 'profile';
 
     React.useEffect(() => {
         const loadProfile = async () => {
-            if (authLoading) return;
-
-            let resolvedUserId = session?.user?.id || user?.id || null;
-
-            if (!resolvedUserId) {
-                await refreshSession();
-                const { data } = await supabase.auth.getSession();
-                resolvedUserId = data.session?.user?.id || null;
-            }
-
-            if (!resolvedUserId) {
-                setError('Please login to view printable details.');
-                setLoading(false);
-                return;
-            }
-
             try {
                 const { data, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('id', resolvedUserId)
+                    .eq('id', userId)
                     .maybeSingle();
 
                 if (profileError) throw profileError;
@@ -125,7 +108,7 @@ export default function PrintDetailsPage() {
 
                 setProfile(data as ProfileData);
             } catch (loadError) {
-                console.error('Print details load error:', loadError);
+                console.error('Admin print details load error:', loadError);
                 setError('Unable to load printable details right now.');
             } finally {
                 setLoading(false);
@@ -133,12 +116,12 @@ export default function PrintDetailsPage() {
         };
 
         void loadProfile();
-    }, [authLoading, refreshSession, session?.user?.id, user?.id]);
+    }, [userId]);
 
     const printableFileName = React.useMemo(() => {
         if (!profile) return 'SindhoorSaubhagya_profile';
-        return buildPrintableFileName(profile, fallbackId);
-    }, [fallbackId, profile]);
+        return buildPrintableFileName(profile, userId);
+    }, [profile, userId]);
 
     React.useEffect(() => {
         if (!profile) return;
@@ -149,7 +132,7 @@ export default function PrintDetailsPage() {
         return () => {
             document.title = previousTitle;
         };
-    }, [printableFileName, profile]);
+    }, [profile, printableFileName]);
 
     const handlePrint = () => {
         if (!profile) return;
@@ -189,11 +172,21 @@ export default function PrintDetailsPage() {
     return (
         <div className={styles.page}>
             <div className={styles.toolbar}>
-                <h1 className={styles.pageTitle}>Print Details</h1>
-                <button type="button" className={styles.printButton} onClick={handlePrint}>
-                    <Printer size={16} />
-                    Print
-                </button>
+                <h1 className={styles.pageTitle}>Admin Print Details</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Link
+                        href={`/admin/users/${userId}`}
+                        className={styles.printButton}
+                        style={{ background: 'linear-gradient(135deg, #334155 0%, #1e293b 100%)', boxShadow: '0 12px 22px rgba(15, 23, 42, 0.22)' }}
+                    >
+                        <ArrowLeft size={16} />
+                        Back
+                    </Link>
+                    <button type="button" className={styles.printButton} onClick={handlePrint}>
+                        <Printer size={16} />
+                        Print / Download
+                    </button>
+                </div>
             </div>
 
             <article className={styles.previewSheet}>

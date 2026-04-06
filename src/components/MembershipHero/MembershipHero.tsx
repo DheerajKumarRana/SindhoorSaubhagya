@@ -1,8 +1,82 @@
+"use client";
+
 import React from 'react';
 import styles from './MembershipHero.module.css';
 import Image from 'next/image';
 
 const MembershipHero = () => {
+    const [leadForm, setLeadForm] = React.useState({
+        motherTongue: '',
+        phone: '',
+        name: '',
+    });
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [submitMessage, setSubmitMessage] = React.useState<string | null>(null);
+
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = event.target;
+        if (name === 'phone') {
+            const digitsOnly = value.replace(/\D/g, '').slice(0, 15);
+            setLeadForm((prev) => ({ ...prev, phone: digitsOnly }));
+            return;
+        }
+        setLeadForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setSubmitMessage(null);
+
+        const motherTongue = leadForm.motherTongue.trim();
+        const name = leadForm.name.trim();
+        const phone = leadForm.phone.trim();
+        const digitsOnlyPhone = phone.replace(/\D/g, '');
+
+        if (!motherTongue || !name || !phone) {
+            setSubmitMessage('Please fill Mother Tongue, Mobile Number, and Name.');
+            return;
+        }
+
+        if (digitsOnlyPhone.length < 10 || digitsOnlyPhone.length > 15) {
+            setSubmitMessage(`Please enter a valid mobile number (10 to 15 digits). You entered ${digitsOnlyPhone.length} digit(s).`);
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const response = await fetch('/api/forms/membership-lead', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    motherTongue,
+                    phone: digitsOnlyPhone,
+                    name,
+                }),
+            });
+
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Unable to submit right now. Please try again in a moment.');
+            }
+
+            setLeadForm({
+                motherTongue: '',
+                phone: '',
+                name: '',
+            });
+            setSubmitMessage('Thanks! Your details were submitted successfully to our team.');
+        } catch (error) {
+            console.error('MembershipHero: lead submit failed', error);
+            setSubmitMessage(error instanceof Error ? error.message : 'Unable to submit right now. Please try again in a moment.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <section className={styles.heroSection}>
             <div className={styles.container}>
@@ -24,10 +98,21 @@ const MembershipHero = () => {
 
                     <p className={styles.subHeading}>Share your details, we will get in touch</p>
 
-                    <div className={styles.formContainer}>
+                    <form
+                        className={styles.formContainer}
+                        onSubmit={handleSubmit}
+                        data-sheet-ignore="true"
+                        data-form-type="membership-hero-lead"
+                    >
                         <div className={`${styles.formGroup} ${styles.borderRight}`}>
                             <label className={styles.label}>Mother Tongue</label>
-                            <select className={styles.select} defaultValue="">
+                            <select
+                                className={styles.select}
+                                name="motherTongue"
+                                value={leadForm.motherTongue}
+                                onChange={handleChange}
+                                required
+                            >
                                 <option value="" disabled>Select</option>
                                 <option value="hindi">Hindi</option>
                                 <option value="english">English</option>
@@ -52,6 +137,13 @@ const MembershipHero = () => {
                                 type="tel"
                                 placeholder="Enter mobile no."
                                 className={styles.input}
+                                name="phone"
+                                value={leadForm.phone}
+                                onChange={handleChange}
+                                inputMode="numeric"
+                                maxLength={15}
+                                pattern="[0-9]{10,15}"
+                                required
                             />
                         </div>
 
@@ -61,13 +153,21 @@ const MembershipHero = () => {
                                 type="text"
                                 placeholder="Enter your name"
                                 className={styles.input}
+                                name="name"
+                                value={leadForm.name}
+                                onChange={handleChange}
+                                required
                             />
                         </div>
 
-                        <button className={styles.submitButton}>
-                            Submit
+                        <button className={styles.submitButton} type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? 'Submitting...' : 'Submit'}
                         </button>
-                    </div>
+                    </form>
+
+                    {submitMessage && (
+                        <p className={styles.submitMessage} aria-live="polite">{submitMessage}</p>
+                    )}
                 </div>
 
                 <div className={styles.imageCol}>

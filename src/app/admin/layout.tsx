@@ -18,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const router = useRouter();
     const [supabase] = React.useState(() => createClient());
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+    const isPrintRoute = pathname.includes('/print');
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
@@ -29,6 +30,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { label: 'User Management', href: '/admin/users', icon: Users },
     ];
+
+    if (isPrintRoute) {
+        return (
+            <div className="bg-white">
+                <main className="p-4 lg:p-8">
+                    {children}
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[linear-gradient(180deg,#fff8f7_0%,#fffdfb_38%,#f7f8fb_100%)] flex">
