@@ -26,7 +26,6 @@ export const metadata: Metadata = {
 import { AuthProvider } from "@/context/AuthProvider";
 import { ModalProvider } from "@/context/ModalContext";
 import GlobalModals from "@/components/GlobalModals";
-import FormToSheetTracker from "@/components/FormToSheetTracker";
 
 // ... existing imports
 
@@ -46,7 +45,6 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ModalProvider>
-            <FormToSheetTracker />
             <GlobalModals />
             <Navbar />
             {children}

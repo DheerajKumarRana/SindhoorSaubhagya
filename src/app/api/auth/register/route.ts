@@ -1,7 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { sendNewProfileOwnerAlert } from '@/lib/profileAlertEmail';
 import { isOwnerAlertEnabled } from '@/lib/adminSettings';
-import { sendToGoogleSheetServer } from '@/lib/googleSheet';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -193,36 +192,6 @@ export async function POST(request: Request) {
                 { success: false, error: "User created but profile setup failed: " + profileError.message },
                 { status: 500 }
             );
-        }
-
-        try {
-            const fullName = `${validatedData.firstName || ''} ${validatedData.lastName || ''}`.trim();
-            await sendToGoogleSheetServer({
-                formType: 'profile-creation',
-                event: 'profile_created',
-                submittedAt: new Date().toISOString(),
-                name: fullName,
-                phone: normalizedPhone || '',
-                email: validatedData.email,
-                message: JSON.stringify({
-                    user_id: authData.user.id,
-                    profile_for: validatedData.profileFor || '',
-                    managed_by: validatedData.managedBy || '',
-                    gender: validatedData.gender || '',
-                    dob: validatedData.dob || '',
-                    marital_status: validatedData.maritalStatus || '',
-                    religion: validatedData.religion || '',
-                    caste: validatedData.caste || '',
-                    mother_tongue: validatedData.motherTongue || '',
-                    occupation: validatedData.occupation || '',
-                    city: validatedData.city || '',
-                    state: validatedData.state || '',
-                    country: validatedData.country || '',
-                    status: 'pending',
-                }),
-            });
-        } catch (sheetError) {
-            console.error("Profile creation Google Sheet push failed:", sheetError);
         }
 
         try {
