@@ -57,9 +57,9 @@ const StatsOfUs = () => {
 
         const animateCounters = () => {
             const duration = 3200;
-            const ratingTarget = 4.5;
-            const yearsTarget = 12;
-            const profilesTarget = 25000;
+            const ratingTarget = 4.9;
+            const yearsTarget = 8;
+            const profilesTarget = 500000;
             const start = performance.now();
 
             const tick = (now: number) => {
@@ -100,12 +100,12 @@ const StatsOfUs = () => {
 
     const formatProfilesCount = (value: number) => {
         if (value <= 0) return '0';
-        if (value < 1000) return `${value}`;
-        const compact = value / 1000;
-        const formatted = Number.isInteger(compact)
-            ? `${compact}`
-            : compact.toFixed(1).replace(/\.0$/, '');
-        return `${formatted}K`;
+        if (value < 100000) return `${value}`;
+        const lakhValue = value / 100000;
+        const formatted = Number.isInteger(lakhValue)
+            ? `${lakhValue}`
+            : lakhValue.toFixed(1).replace(/\.0$/, '');
+        return `${formatted} Lakh`;
     };
 
     // Helper to determine class based on relative position
@@ -129,11 +129,10 @@ const StatsOfUs = () => {
         <section className={styles.section} ref={sectionRef}>
             <div className={styles.header}>
                 <h2 className={styles.title}>
-                    Stats <span className={styles.titleHighlight}>Of Us</span>
+                    Where Things <span className={styles.titleHighlight}>Stand Today</span>
                 </h2>
                 <p className={styles.subtitle}>
-                    Select from best plans, ensuring a perfect match. Need more or less?<br className="hidden md:block" />
-                    Customize your subscription for a seamless fit!
+                    These numbers reflect the community that has formed around this platform over the years. We share them not to impress but because we think they are worth knowing.
                 </p>
             </div>
 
@@ -161,8 +160,8 @@ const StatsOfUs = () => {
                         ))}
                     </div>
                     <div className={styles.galleryText}>
-                        <h3>Lorem ispum</h3>
-                        <p>A strong team of seasoned professionals driving every project forward.</p>
+                        <h3>Community Snapshot</h3>
+                        <p>Real outcomes over the years, built on trust and serious intent.</p>
                     </div>
                 </div>
 
@@ -177,8 +176,8 @@ const StatsOfUs = () => {
                             style={{ objectFit: 'contain' }}
                         />
                     </div>
-                    <div className={styles.statValue}>{ratingCount.toFixed(1)} Rating</div>
-                    <div className={styles.statDesc}>Rated among the top by our satisfied users.</div>
+                    <div className={styles.statValue}>{ratingCount.toFixed(1)}</div>
+                    <div className={styles.statDesc}>Average Rating<br />Rated by members who have used the platform and shared their honest experience.</div>
                 </div>
 
                 {/* 3. Years Card */}
@@ -192,15 +191,15 @@ const StatsOfUs = () => {
                             style={{ objectFit: 'contain' }}
                         />
                     </div>
-                    <div className={styles.statValue}>{yearsCount}+ yrs</div>
-                    <div className={styles.statDesc}>Decades of insight. A legacy of excellence.</div>
+                    <div className={styles.statValue}>{yearsCount} Years</div>
+                    <div className={styles.statDesc}>In This Space<br />Eight years of learning, improving, and staying focused on what actually matters.</div>
                 </div>
 
                 {/* 4. Big Stats Card */}
                 <div className={`${styles.card} ${styles.bigCard}`}>
                     <div className={styles.bigCardContent}>
                         <div className={styles.bigTitle}>{formatProfilesCount(profilesCount)}+</div>
-                        <div className={styles.statDesc}>Trusted by a growing number of clients from all around the world corners</div>
+                        <div className={styles.statDesc}>Marriages Attributed<br />Couples who met here and chose to spend their lives together. Each one means a great deal to us.</div>
                     </div>
                 </div>
             </div>

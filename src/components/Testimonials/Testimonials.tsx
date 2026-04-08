@@ -7,30 +7,30 @@ import styles from './Testimonials.module.css';
 const testimonials = [
     {
         id: 1,
-        text: "I wanted a life partner who shared my values and beliefs, not just interests. The matching system helped me connect with someone who truly understands me. Today, we are happily married.",
-        name: "Rohan & Shree",
-        role: "Couple",
+        text: "I was not expecting much honestly. I had been on a couple of other platforms and felt like I was just another profile in a pile. But the conversations I had here felt different from the start. The person I ended up meeting had a very similar outlook on life and family. We got married last year and I still think about how close I came to not signing up.",
+        name: "Karan and Meghna",
+        role: "New Delhi",
         image: "/groom-phone.png" // Placeholder
     },
     {
         id: 2,
-        text: "Finding someone who understands your family values is hard. Sindoor Saubhagya made it easy for us to connect on a deeper level right from the start.",
-        name: "Arjun & Sneha",
-        role: "Couple",
+        text: "We were looking for someone for our son for almost two years. Nothing was clicking. A relative suggested we try Sindoor Saubhagya and within a few months we came across a profile that felt right in every way. The families met, conversations happened naturally, and things moved forward from there. We are very glad we gave it a chance.",
+        name: "Suresh and Kamala",
+        role: "Delhi",
         image: "/bride-phone.png" // Placeholder
     },
     {
         id: 3,
-        text: "The verification process gave us so much peace of mind. We knew we were talking to genuine people who were serious about marriage.",
-        name: "Vikram & Priya",
-        role: "Couple",
+        text: "Faith was really important to me in a partner and I found it genuinely difficult to find that on most platforms. Here I could actually filter by what mattered to me without it feeling like an afterthought. I met my husband through this platform and our shared values have been the foundation of our relationship from day one.",
+        name: "Divya and Rajat",
+        role: "Delhi",
         image: "/couple-formal.png" // Placeholder
     },
     {
         id: 4,
-        text: "We met through the app and instantly clicked. The detailed profiles helped us know so much about each other before we even met.",
-        name: "Rahul & Anjali",
-        role: "Couple",
+        text: "The profiles here felt more real than what I had seen elsewhere. People had actually filled things in properly and you could get a sense of who someone was before reaching out. My wife and I spoke for three months before meeting and by the time we did it felt like we already knew each other. It was a good experience overall.",
+        name: "Shilpika and Rakesh",
+        role: "Delhi",
         image: "/couple-traditional.png" // Placeholder
     },
 ];
@@ -43,10 +43,10 @@ const Testimonials = () => {
         <section className={styles.section}>
             <div className={styles.header}>
                 <h2 className={styles.title}>
-                    What Our <span className={styles.titleHighlight}>Customers Say</span>
+                    In Their <span className={styles.titleHighlight}>Own Words</span>
                 </h2>
                 <p className={styles.subtitle}>
-                    Real stories from people around the world using our platform to build, grow, and connect.
+                    A few people who used this platform share what the experience was like for them.
                 </p>
             </div>
 

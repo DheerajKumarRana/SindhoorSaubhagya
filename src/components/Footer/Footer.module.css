@@ -15,11 +15,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     font-size: 16px;
 }
 
 .topBarText {
     font-weight: 500;
+    flex: 1;
 }
 
 .registerBtn {
@@ -36,6 +38,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: max-content;
 }
 
 .registerBtn:hover {

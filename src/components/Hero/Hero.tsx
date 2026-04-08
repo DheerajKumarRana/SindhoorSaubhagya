@@ -303,47 +303,47 @@ const Hero = () => {
                 {/* Left Text Content */}
                 <div className={styles.textContent}>
                     <h1 className={styles.headline}>
-                        Find Your Life <span className={styles.highlightHeart}>❤</span> Partner,<br />
-                        Not Just a Match
+                        Some Meetings Are Meant to Happen
                     </h1>
                     <p className={styles.subHeadline}>
-                        A trusted matrimonial platform helping families and individuals connect with verified, faith-aligned, and serious profiles.
+                        Sindoor Saubhagya is a platform where families and individuals looking for a serious, lifelong relationship can meet people who share the same intention.
                     </p>
                     <div className={styles.actionButtons}>
-                        <Link href="/membership" className={styles.btnPrimary}>Our Plans</Link>
-                        <Link href="/contact" className={styles.btnSecondary}>Contact Us</Link>
+                        <Link href="/membership" className={styles.btnPrimary}>See Our Plans</Link>
+                        <Link href="/contact" className={styles.btnSecondary}>Speak to Us</Link>
                     </div>
                 </div>
 
                 <div className={styles.formCard}>
                     <h3 className={styles.formTitle}>
-                        {step === 1 && "Register"}
-                        {step === 2 && "Step 2 – Profile For + Basic Info"}
-                        {step === 3 && "Step 3 – Personal Details"}
-                        {step === 4 && "Step 4 – Career & Education"}
-                        {step === 5 && "Step 5 – Family & Lifestyle"}
-                        {step === 6 && "Step 6 – About Me"}
+                        {step === 1 && "Who Are You Looking For?"}
+                        {step === 2 && "Step 2 - Profile For + Basic Info"}
+                        {step === 3 && "Step 3 - Personal Details"}
+                        {step === 4 && "Step 4 - Career & Education"}
+                        {step === 5 && "Step 5 - Family & Lifestyle"}
+                        {step === 6 && "Step 6 - About Me"}
                     </h3>
 
                     <form onSubmit={handleRegister}>
                         {step === 1 && (
                             <div className={styles.slide}>
                                 <div className={styles.formGroup}>
-                                    <span className={styles.inputLabel}>Create Profile for</span>
+                                    <span className={styles.inputLabel}>This profile is being created for</span>
                                     <CustomSelect
                                         name="profileFor"
                                         value={formData.profileFor}
                                         onChange={handleChange}
                                         required
-                                        placeholder="Select Profile For"
+                                        placeholder="Select an option"
                                         options={[
-                                            { value: 'self', label: 'Self' },
-                                            { value: 'son', label: 'Son' },
-                                            { value: 'daughter', label: 'Daughter' },
-                                            { value: 'sister', label: 'Sister' },
-                                            { value: 'brother', label: 'Brother' },
-                                            { value: 'friend', label: 'Relative/Friend' },
-                                            { value: 'other', label: 'Other' },
+                                            { value: 'self', label: 'Myself' },
+                                            { value: 'son', label: 'My Son' },
+                                            { value: 'daughter', label: 'My Daughter' },
+                                            { value: 'sister', label: 'My Sister' },
+                                            { value: 'brother', label: 'My Brother' },
+                                            { value: 'family-member', label: 'A Family Member' },
+                                            { value: 'friend', label: 'Someone I Know' },
+                                            
                                         ]}
                                     />
                                 </div>
@@ -653,7 +653,7 @@ const Hero = () => {
                                 disabled={loading || (step === 6 && !isConfirmed)}
                             >
                                 {loading ? 'Processing...' :
-                                    step === 1 ? 'Start Registration' : // Changed from 'Register for free' to match design preference if needed, or keep 'Register for free'
+                                    step === 1 ? 'Begin Here' :
                                         step === 6 ? 'Register & Verify Email' : 'Next'}
                                 {step < 6 && <ChevronRight size={20} />}
                             </button>
@@ -664,14 +664,13 @@ const Hero = () => {
 
             <div className={styles.bottomBar}>
                 <div className={styles.bottomBarContent}>
-                    <span>Fastest Growing Matchmaking Service</span>
+                    <span>A Growing Community of Serious Profiles Across India</span>
                     <span className={styles.separator}>|</span>
                     <span>
-                        <span className={styles.stars}>★★★★★</span>
-                        Ratings on Playstore by 2.4 lakh users
+                        <span className={styles.stars}>★★★★★</span> Rated
                     </span>
                     <span className={styles.separator}>|</span>
-                    <span>5 Lakh Success Stories</span>
+                    <span>Part Of Over 50+ Wedding Stories</span>
                 </div>
             </div>
         </section>

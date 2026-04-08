@@ -3,8 +3,29 @@
     padding: 80px 5%;
     background-color: #fff;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     font-family: var(--font-poppins);
+}
+
+.sectionHeader {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 28px;
+}
+
+.sectionHeading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+.sectionSubheading {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    max-width: 760px;
 }
 
 .container {
@@ -183,6 +204,14 @@
 @media (max-width: 768px) {
     .section {
         padding: 40px 20px;
+    }
+
+    .sectionHeading {
+        font-size: 1.6rem;
+    }
+
+    .sectionSubheading {
+        font-size: 0.95rem;
     }
 
     .formSide {

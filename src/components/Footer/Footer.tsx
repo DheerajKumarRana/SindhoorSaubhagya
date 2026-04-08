@@ -16,15 +16,25 @@ const GALLERY_IMAGES = [
     '/bride-phone.png',
 ];
 
-const Footer = () => {
+type FooterProps = {
+    topBarText?: string;
+    topBarButtonText?: string;
+    topBarButtonHref?: string;
+};
+
+const Footer = ({
+    topBarText = "Serious introductions for people who are ready.",
+    topBarButtonText = "Register Free",
+    topBarButtonHref = "/register",
+}: FooterProps) => {
     return (
         <footer className={styles.footer}>
             <div className={styles.topBar}>
                 <span className={styles.topBarText}>
-                    Find your life partner among 7 Lakhs Christian Matrimony Brides & Grooms.
+                    {topBarText}
                 </span>
-                <Link href="/register" className={styles.registerBtn}>
-                    Register Free
+                <Link href={topBarButtonHref} className={styles.registerBtn}>
+                    {topBarButtonText}
                 </Link>
             </div>
 
@@ -66,10 +76,10 @@ const Footer = () => {
                             height={100}
                             className={styles.footerLogo}
                         />
+                        <p className={styles.tagline}>Serious introductions for people who are ready.</p>
 
                         <div className={styles.address}>
-                            <p>Address: XYZ CITY, 121009</p>
-                            <p>phone nos. +91 xxxxxx xxxxx</p>
+                            <p>Address: XYZ City, 121009</p>
                         </div>
                     </div>
 

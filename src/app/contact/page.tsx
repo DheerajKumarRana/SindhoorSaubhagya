@@ -7,7 +7,11 @@ export default function ContactPage() {
         <main>
             <ContactHero />
             <ContactFormSection />
-            <Footer />
+            <Footer
+                topBarText="Over 7 Lakh families have already placed their trust in us. Yours could be next. Create your free profile today and take the first step toward something truly beautiful."
+                topBarButtonText="Create a Free Profile"
+                topBarButtonHref="/register"
+            />
         </main>
     );
 }

@@ -9,27 +9,27 @@ const ContactUs = () => {
     // Testimonials data
     const testimonials = [
         {
-            text: "I wanted a life partner who shared my values and beliefs. The matching system helped me connect with someone who truly understands me.",
-            name: "Rohan & Shree",
-            role: "Couple",
+            text: "I was not expecting much honestly. The conversations here felt different from the start.",
+            name: "Karan and Meghna",
+            role: "New Delhi",
             image: "/groom-phone.png"
         },
         {
-            text: "Finding someone who understands your family values is hard. Sindoor Saubhagya made it easy for us.",
-            name: "Arjun & Sneha",
-            role: "Couple",
+            text: "We were looking for someone for our son for almost two years. We are glad we gave this a chance.",
+            name: "Suresh and Kamala",
+            role: "Delhi",
             image: "/bride-phone.png"
         },
         {
-            text: "The verification process gave us so much peace of mind. We knew we were talking to genuine people.",
-            name: "Vikram & Priya",
-            role: "Couple",
+            text: "Faith was really important to me and I could filter by what mattered.",
+            name: "Divya and Rajat",
+            role: "Delhi",
             image: "/couple-formal.png"
         },
         {
-            text: "Detailed profiles helped us know so much about each other before we even met.",
-            name: "Rahul & Anjali",
-            role: "Couple",
+            text: "The profiles felt more real and detailed. It was a good experience overall.",
+            name: "Shilpika and Rakesh",
+            role: "Delhi",
             image: "/couple-traditional.png"
         },
     ];
@@ -81,9 +81,10 @@ const ContactUs = () => {
         <section className={styles.section}>
             {/* Header */}
             <div className={styles.titleContainer}>
-                <h2 className={styles.title}>
-                    Contact Us <span className={styles.titleHighlight}>Now</span>
-                </h2>
+                <h2 className={styles.title}>Have a Question Before You Begin?</h2>
+                <p className={styles.subtitle}>
+                    Write to us below and someone from our team will reach out to you directly. No sales pitch. Just an honest conversation.
+                </p>
             </div>
 
             {/* Background Marquee Layer */}
@@ -148,7 +149,7 @@ const ContactUs = () => {
             {/* 3. Enquiry Form */}
             <div className={styles.formLayer}>
                 <div className={styles.formCard}>
-                    <h3 className={styles.formTitle}>Enter your enquiry</h3>
+                    <h3 className={styles.formTitle}>What would you like to know?</h3>
 
                     {isSubmitted ? (
                         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
@@ -197,7 +198,7 @@ const ContactUs = () => {
                             <div className={styles.formGroup}>
                                 <textarea
                                     name="message"
-                                    placeholder="Enter your enquiry"
+                                    placeholder="Write it here and we will get back to you."
                                     className={styles.formInput}
                                     style={{ height: '100px', paddingTop: '10px', resize: 'vertical' }}
                                     value={enquiry.message}
@@ -212,7 +213,7 @@ const ContactUs = () => {
                                 disabled={isSubmitting}
                                 style={{ opacity: isSubmitting ? 0.7 : 1 }}
                             >
-                                {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
+                                {isSubmitting ? 'Submitting...' : 'SUBMIT'}
                             </button>
                         </form>
                     )}

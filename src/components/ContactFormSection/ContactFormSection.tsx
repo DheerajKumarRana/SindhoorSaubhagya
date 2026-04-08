@@ -35,7 +35,7 @@ const ContactFormSection = () => {
                 ...formData,
             });
 
-            setSubmitMessage('Message submitted successfully. Our team will contact you soon.');
+            setSubmitMessage('Message submitted successfully. We will get back to you within a few hours.');
             setFormData({
                 fullName: '',
                 email: '',
@@ -53,14 +53,20 @@ const ContactFormSection = () => {
 
     return (
         <section className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionHeading}>Write to Us Directly</h2>
+                <p className={styles.sectionSubheading}>
+                    Share your question, concern, or feedback below and we will get back to you personally within a few hours.
+                </p>
+            </div>
             <div className={styles.container}>
 
                 {/* Left Side - Form */}
                 <div className={styles.formSide}>
-                    <h2 className={styles.formTitle}>Send us a Message</h2>
+                    <h2 className={styles.formTitle}>Write to Us Directly</h2>
                     <form onSubmit={handleSubmit} data-sheet-ignore="true" data-form-type="contact-page-message">
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Full Name</label>
+                            <label className={styles.label}>Your Full Name</label>
                             <input
                                 type="text"
                                 name="fullName"
@@ -72,7 +78,7 @@ const ContactFormSection = () => {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Email Address</label>
+                            <label className={styles.label}>Your Email Address</label>
                             <input
                                 type="email"
                                 name="email"
@@ -84,7 +90,7 @@ const ContactFormSection = () => {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Phone Number</label>
+                            <label className={styles.label}>Your Phone Number</label>
                             <input
                                 type="tel"
                                 name="phone"
@@ -96,7 +102,7 @@ const ContactFormSection = () => {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Subject</label>
+                            <label className={styles.label}>What Is This About?</label>
                             <select
                                 className={styles.select}
                                 name="subject"
@@ -105,14 +111,14 @@ const ContactFormSection = () => {
                                 required
                             >
                                 <option value="" disabled>Select a subject</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="support">Technical Support</option>
-                                <option value="billing">Billing</option>
-                                <option value="feedback">Feedback</option>
+                                <option value="general-question">General Question</option>
+                                <option value="technical-help">Technical Help</option>
+                                <option value="membership-billing">Membership and Billing</option>
+                                <option value="share-feedback">Share Feedback</option>
                             </select>
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Message / Query</label>
+                            <label className={styles.label}>Write Your Message Here</label>
                             <textarea
                                 name="message"
                                 placeholder="Tell us how we can help you..."
@@ -124,7 +130,7 @@ const ContactFormSection = () => {
                         </div>
 
                         <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
+                            {isSubmitting ? 'Submitting...' : 'Submit My Message'}
                         </button>
                         {submitMessage && (
                             <p style={{ marginTop: '12px', fontSize: '14px', color: '#333' }}>{submitMessage}</p>
@@ -134,7 +140,7 @@ const ContactFormSection = () => {
 
                 {/* Right Side - Info */}
                 <div className={styles.infoSide}>
-                    <h3 className={styles.infoTitle}>Contact Information</h3>
+                    <h3 className={styles.infoTitle}>Prefer to Reach Out Directly?</h3>
 
                     {/* Address */}
                     <div className={styles.infoItem}>
@@ -142,7 +148,7 @@ const ContactFormSection = () => {
                             <MapPin size={24} color="#E31E24" />
                         </div>
                         <div className={styles.infoContent}>
-                            <h4>Office Address</h4>
+                            <h4>Visit Our Office</h4>
                             <p>123 Matrimony Plaza, Connaught Place</p>
                             <p>New Delhi - 110001, India</p>
                         </div>
@@ -154,7 +160,7 @@ const ContactFormSection = () => {
                             <Mail size={24} color="#E31E24" />
                         </div>
                         <div className={styles.infoContent}>
-                            <h4>Email Address</h4>
+                            <h4>Write to Us</h4>
                             <a href="mailto:support@matrimony.com">support@matrimony.com</a>
                             <a href="mailto:care@matrimony.com">care@matrimony.com</a>
                         </div>
@@ -166,17 +172,17 @@ const ContactFormSection = () => {
                             <Phone size={24} color="#E31E24" />
                         </div>
                         <div className={styles.infoContent}>
-                            <h4>Contact Number</h4>
+                            <h4>Give Us a Call</h4>
                             <p>+91 98765 43210</p>
-                            <p>+91 98765 43211 (Toll Free)</p>
+                            <p>+91 98765 43211</p>
                         </div>
                     </div>
 
                     <div className={styles.separator}></div>
 
-                    <h4 className={styles.operatingTitle}>Operating Hours</h4>
-                    <p className={styles.operatingText}>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                    <p className={styles.operatingText}>Saturday: 10:00 AM - 4:00 PM</p>
+                    <h4 className={styles.operatingTitle}>When We Are Available</h4>
+                    <p className={styles.operatingText}>Monday to Friday: 9:00 AM to 6:00 PM</p>
+                    <p className={styles.operatingText}>Saturday: 10:00 AM to 4:00 PM</p>
                     <p className={styles.operatingText}>Sunday: Closed</p>
 
                 </div>

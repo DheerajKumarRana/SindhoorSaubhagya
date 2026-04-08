@@ -10,12 +10,9 @@ const ContactHero = () => {
             <div className={styles.container}>
                 {/* Left Content */}
                 <div className={styles.contentSide}>
-                    <h1 className={styles.title}>
-                        Have <span className={styles.titleSpan}>a</span> <br />
-                        Question?
-                    </h1>
+                    <h1 className={styles.title}>Get in Touch</h1>
                     <p className={styles.subtitle}>
-                        We're here to help you find the right match
+                        No automated replies, no endless wait times. When you reach out to Sindoor Saubhagya you speak to a real person who understands what this search means to you and is genuinely here to help.
                     </p>
                 </div>
 

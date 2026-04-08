@@ -25,6 +25,14 @@
     color: #000;
 }
 
+.subtitle {
+    margin-top: 0.75rem;
+    max-width: 880px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #4a4a4a;
+}
+
 .titleHighlight {
     color: #E31E24;
 }
@@ -325,6 +333,11 @@
 
     .title {
         font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+        padding: 0 1rem;
     }
 
     .formLayer {

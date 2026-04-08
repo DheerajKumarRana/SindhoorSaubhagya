@@ -5,25 +5,21 @@ import Image from "next/image";
 
 const faqs = [
     {
-        question: "1. How do I register?",
+        question: "Q1: How do I create a profile on Sindoor Saubhagya?",
         answer:
-            "Loreis mis lore sipum lore m ispum lore spim lroe imsim llore ispumdey uneseo lorem advbhf ahr hsjfloreis mis lore sipum lore m ispum lore spim lroe imsim llore ispumdey uneseo lorem advbhf ahr hsjf",
+            "Click on the Register button and fill in your details step by step. The whole thing takes about five to ten minutes. Once submitted our team reviews your profile and it typically goes live within a day. After that you can start browsing at your own pace.",
     },
     {
-        question: "2. Can I search for profiles by Christian community?",
-        answer: "Yes, you can search for profiles specifically within the Christian community using our advanced search filters.",
+        question: "Q2: Can I look for profiles from a specific religion or community?",
+        answer: "Yes. The search filters on our platform let you look by religion, community, caste, mother tongue, location, and several other criteria. You are in complete control of how you narrow your search.",
     },
     {
-        question: "3. Is the app free to download?",
-        answer: "Yes, the app is free to download on both iOS and Android stores.",
+        question: "Q3: How is my personal information handled?",
+        answer: "Your data is stored securely and encrypted. You control what appears on your profile and who can contact you. We do not share your information with outside parties.",
     },
     {
-        question: "4. Are my personal details safe?",
-        answer: "Absolutely. We prioritize your privacy and ensure all personal details are encrypted and secure.",
-    },
-    {
-        question: "5. How do I contact customer support?",
-        answer: "You can contact our customer support via the 'Contact Us' section in the app or website.",
+        question: "Q4: Who do I speak to if I run into a problem?",
+        answer: "Reach out through the Contact Us page, by email, or by phone. Our team is available Monday through Saturday. We try to respond to every message within the same day.",
     },
 ];
 
@@ -37,7 +33,7 @@ const MatrimonyQueries: React.FC = () => {
     return (
         <section className={styles.section}>
             <h2 className={styles.heading}>
-                Your <span className={styles.highlight}>Matrimony</span> Queries
+                Things People Usually <span className={styles.highlight}>Ask Us</span>
             </h2>
 
             <div className={styles.container}>

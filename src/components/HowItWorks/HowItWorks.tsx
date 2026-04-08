@@ -7,9 +7,9 @@ import styles from './HowItWorks.module.css';
 const steps = [
     {
         id: 1,
-        title: "Create your profile",
-        highlight: "profile",
-        description: "Our AI algorithms help you see how compatible you are with your match.",
+        title: "Put Together Your Profile",
+        highlight: "Profile",
+        description: "Your profile is how people get to know you before they ever speak to you. Take a few minutes to fill it in thoughtfully and it will do a lot of the work for you.",
         icon: <Heart size={24} fill="currentColor" />,
         image: "/mockup.png"
     },
@@ -17,23 +17,23 @@ const steps = [
         id: 2,
         title: "Choose a Membership",
         highlight: "Membership",
-        description: "Connect confidently with matches who have been verified for authenticity.",
+        description: "We have plans for different needs and different budgets. Pick one that feels right for where you are in your search right now.",
         icon: <UserCheck size={24} />,
         image: "/mockup.png"
     },
     {
         id: 3,
-        title: "Shortlist & Select Profiles",
-        highlight: "Select Profiles",
-        description: "With chat you can connect with your matches on a deeper level.",
+        title: "Browse and Reach Out",
+        highlight: "Reach Out",
+        description: "Look through profiles at your own pace. When someone catches your attention, express interest or start a conversation. There is no rush here.",
         icon: <Search size={24} />,
         image: "/mockup.png"
     },
     {
         id: 4,
-        title: "Take the Next Step",
-        highlight: "Next Step",
-        description: "People concerned about their privacy can blur their pictures.",
+        title: "Take It at Your Own Pace",
+        highlight: "Own Pace",
+        description: "Everything that happens next is up to you. Your privacy settings, your conversations, your decisions. We are just here to make the introductions.",
         icon: <ArrowRight size={24} />,
         image: "/mockup.png"
     }
@@ -43,8 +43,8 @@ const HowItWorks = () => {
     return (
         <section className={styles.section}>
             <div className={styles.heading}>
-                <h2 className={styles.title}>How it <span className={styles.highlight}>works</span></h2>
-                <p className={styles.subtitle}>Connect with other singles and make speed data.</p>
+                <h2 className={styles.title}>How the <span className={styles.highlight}>Journey Usually Goes</span></h2>
+                <p className={styles.subtitle}>We have kept the process simple and honest so you can focus on what actually matters, finding the right person.</p>
             </div>
 
             <div className={styles.stepsContainer}>

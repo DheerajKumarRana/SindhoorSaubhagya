@@ -11,12 +11,35 @@
 .topBar {
     background-color: var(--primary-red);
     color: var(--white);
-    text-align: center;
     padding: 8px 0;
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.topBarTrack {
+    display: inline-flex;
+    align-items: center;
+    min-width: max-content;
+    animation: topBarScroll 28s linear infinite;
+}
+
+.topBarTrack span {
+    display: inline-block;
+    padding-right: 0;
+}
+
+@keyframes topBarScroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 .mainNav {

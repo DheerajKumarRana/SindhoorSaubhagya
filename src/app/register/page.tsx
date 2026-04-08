@@ -207,8 +207,8 @@ const RegisterPage = () => {
     return (
         <div className={styles.registerContainer}>
             <div className={styles.formCard}>
-                <h1 className={styles.pageTitle}>Create your Profile</h1>
-                <p className={styles.pageSubtitle}>Join thousands of happy couples</p>
+                <h1 className={styles.pageTitle}>Who Are You Looking For?</h1>
+                <p className={styles.pageSubtitle}>This profile is being created for</p>
 
                 {error && <div className={styles.errorMsg}>{error}</div>}
 
@@ -218,20 +218,21 @@ const RegisterPage = () => {
                         <h3 className={styles.sectionTitle}>Account Details</h3>
                         <div className={styles.formGrid}>
                             <div className={styles.formGroup}>
-                                <label className={styles.label}>Profile For</label>
+                                <label className={styles.label}>This profile is being created for</label>
                                 <CustomSelect
                                     name="profileFor"
                                     value={formData.profileFor}
                                     onChange={handleChange}
                                     required
-                                    placeholder="Select Profile For"
+                                    placeholder="Select an option"
                                     options={[
-                                        { value: 'self', label: 'Self' },
-                                        { value: 'son', label: 'Son' },
-                                        { value: 'daughter', label: 'Daughter' },
-                                        { value: 'sister', label: 'Sister' },
-                                        { value: 'brother', label: 'Brother' },
-                                        { value: 'friend', label: 'Relative/Friend' },
+                                        { value: 'self', label: 'Myself' },
+                                        { value: 'son', label: 'My Son' },
+                                        { value: 'daughter', label: 'My Daughter' },
+                                        { value: 'sister', label: 'My Sister' },
+                                        { value: 'brother', label: 'My Brother' },
+                                        { value: 'family-member', label: 'A Family Member' },
+                                        { value: 'friend', label: 'Someone I Know' },
                                     ]}
                                 />
                             </div>
@@ -554,7 +555,7 @@ const RegisterPage = () => {
                         disabled={loading}
                         style={{ opacity: loading ? 0.7 : 1 }}
                     >
-                        {loading ? 'Processing...' : 'Register'}
+                        {loading ? 'Processing...' : 'Register & Verify Email'}
                     </button>
 
                 </form>

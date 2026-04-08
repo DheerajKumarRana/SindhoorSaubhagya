@@ -52,12 +52,16 @@ const Navbar = () => {
         : normalizedStatus === 'Pending'
             ? styles.statusPending
             : styles.statusDisabled;
+    const announcementText = "100% Verified Profiles | India's one of the best online matchmaking website | Trusted by more than 50 couples | Get in touch today | Find matches as per your requirements |";
 
     return (
         <>
             <nav className={styles.navbarContainer}>
                 <div className={styles.topBar}>
-                    50% OFF ON MEMBERSHIP PLANS
+                    <div className={styles.topBarTrack}>
+                        <span>{announcementText}</span>
+                        <span aria-hidden="true">{announcementText}</span>
+                    </div>
                 </div>
 
                 <div className={styles.mainNav}>
