@@ -10,6 +10,17 @@ import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+type AdminProfileFormData = {
+    [key: string]: string;
+};
+
+type InputGroupProps = {
+    label: string;
+    name: string;
+    type?: string;
+    options?: string[] | null;
+};
+
 export default function AdminUserDetails({ userId }: { userId: string }) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
@@ -20,7 +31,7 @@ export default function AdminUserDetails({ userId }: { userId: string }) {
     const supabase = createClient();
 
     // Form State (Same as EditProfile)
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState<AdminProfileFormData>({
         // Initialize with defaults to avoid uncontrolled inputs
         first_name: '', last_name: '', dob: '', gender: '', height: '', weight: '',
         marital_status: '', mother_tongue: '', religion_name: '', caste_name: '', sub_caste_name: '',
@@ -65,7 +76,7 @@ export default function AdminUserDetails({ userId }: { userId: string }) {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -134,7 +145,7 @@ export default function AdminUserDetails({ userId }: { userId: string }) {
 
     if (loading) return <div className="p-8 text-center">Loading user details...</div>;
 
-    const InputGroup = ({ label, name, type = "text", options = null }: any) => (
+    const InputGroup = ({ label, name, type = "text", options = null }: InputGroupProps) => (
         <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
             {options ? (

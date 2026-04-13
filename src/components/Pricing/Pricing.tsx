@@ -2,6 +2,7 @@
 
 import styles from './Pricing.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useModal } from '@/context/ModalContext';
 
 const CheckIcon = () => (
@@ -121,7 +122,7 @@ const Pricing = () => {
                     <h3 className={styles.bannerTitle}>100% Money Back Guarantee!</h3>
                     <p className={styles.bannerDesc}>
                         You get a friendly 7 days money back guarantee.<br />
-                        Read our <a href="#" className={styles.link}>Refund Policy here</a>.
+                        Read our <Link href="/contact" className={styles.link}>Refund Policy here</Link>.
                     </p>
                 </div>
             </div>

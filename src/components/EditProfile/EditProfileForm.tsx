@@ -273,9 +273,10 @@ const EditProfileForm = () => {
             await syncPhotosWithProfile(updatedPhotos);
             setMessage({ type: 'success', text: 'Photo updated successfully!' });
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error uploading photo:', error);
-            setMessage({ type: 'error', text: error.message || 'Failed to upload photo' });
+            const message = error instanceof Error ? error.message : 'Failed to upload photo';
+            setMessage({ type: 'error', text: message });
         } finally {
             setSaving(false);
         }
@@ -348,8 +349,9 @@ const EditProfileForm = () => {
             setSaved(true);
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
             // Optionally redirect after delay
-        } catch (error: any) {
-            setMessage({ type: 'error', text: error.message || 'Failed to update profile' });
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Failed to update profile';
+            setMessage({ type: 'error', text: message });
         } finally {
             setSaving(false);
         }
@@ -661,11 +663,11 @@ const EditProfileForm = () => {
                             <input type="text" name="native_city" className={styles.input} value={formData.native_city} onChange={handleChange} />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Father's Occupation</label>
+                            <label className={styles.label}>Father&apos;s Occupation</label>
                             <input type="text" name="father_occupation" className={styles.input} value={formData.father_occupation} onChange={handleChange} />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Mother's Occupation</label>
+                            <label className={styles.label}>Mother&apos;s Occupation</label>
                             <input type="text" name="mother_occupation" className={styles.input} value={formData.mother_occupation} onChange={handleChange} />
                         </div>
                         <div className={styles.formGroup}>
@@ -695,7 +697,7 @@ const EditProfileForm = () => {
                                 className={styles.input}
                                 style={{ minHeight: '80px', resize: 'vertical' }}
                                 value={formData.about_family}
-                                onChange={(e: any) => handleChange(e as any)}
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
@@ -799,7 +801,7 @@ const EditProfileForm = () => {
                             </select>
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>Annual Income (₹)</label>
+                            <label className={styles.label}>Annual Income (INR)</label>
                             <input
                                 type="number"
                                 name="annual_income"
@@ -839,7 +841,7 @@ const EditProfileForm = () => {
                             className={styles.input}
                             style={{ minHeight: '100px', resize: 'vertical' }}
                             value={formData.about_me}
-                            onChange={(e: any) => handleChange(e as any)}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
@@ -982,3 +984,4 @@ const EditProfileForm = () => {
 };
 
 export default EditProfileForm;
+

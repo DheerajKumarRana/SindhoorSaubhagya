@@ -27,7 +27,7 @@ const Footer = ({
     topBarButtonText = "Register Free",
     topBarButtonHref = "/register",
 }: FooterProps) => {
-    const businessAddress = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS || 'New Delhi, India';
+    const businessAddress = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS || '123 Matrimony Plaza, Connaught Place, New Delhi - 110001, India';
 
     return (
         <footer className={styles.footer}>
@@ -94,10 +94,10 @@ const Footer = ({
                         </nav>
 
                         <div className={styles.socialIcons}>
-                            <a href="#" className={styles.iconBtn}><Twitter size={18} /></a>
-                            <a href="#" className={styles.iconBtn}><Facebook size={18} /></a>
-                            <a href="#" className={styles.iconBtn}><Instagram size={18} /></a>
-                            <a href="#" className={styles.iconBtn}><Linkedin size={18} /></a>
+                            <a href="https://twitter.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Twitter size={18} /></a>
+                            <a href="https://facebook.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Facebook size={18} /></a>
+                            <a href="https://instagram.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Instagram size={18} /></a>
+                            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Linkedin size={18} /></a>
                         </div>
                     </div>
                 </div>

@@ -61,6 +61,19 @@ export async function POST(request: Request) {
         const body = await request.json();
         const payload = payloadSchema.parse(body);
         const normalizedEmail = payload.email.trim().toLowerCase();
+        const requestedRole = payload.role;
+        const canAssignSuperAdmin = adminCheck.role === 'super_admin';
+
+        if (requestedRole === 'super_admin' && !canAssignSuperAdmin) {
+            return NextResponse.json(
+                { success: false, error: 'Only super admins can assign super admin role.' },
+                { status: 403 }
+            );
+        }
+
+        const effectiveRole = requestedRole === 'super_admin' && canAssignSuperAdmin
+            ? 'super_admin'
+            : requestedRole;
 
         const adminSupabase = createAdminClient();
         const existingUser = await findAuthUserByEmail(normalizedEmail);
@@ -98,7 +111,7 @@ export async function POST(request: Request) {
                 {
                     user_id: targetUserId,
                     email: normalizedEmail,
-                    role: payload.role,
+                    role: effectiveRole,
                     is_active: true,
                     updated_at: new Date().toISOString(),
                 },
@@ -117,7 +130,7 @@ export async function POST(request: Request) {
             admin: {
                 userId: targetUserId,
                 email: normalizedEmail,
-                role: payload.role,
+                role: effectiveRole,
             },
         });
     } catch (error: unknown) {
@@ -129,4 +142,3 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
-

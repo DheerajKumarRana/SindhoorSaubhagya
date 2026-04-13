@@ -223,8 +223,6 @@ export async function POST(request: Request) {
                     city: validatedData.city,
                     state: validatedData.state,
                 });
-            } else {
-                console.log('Owner alert email skipped: admin toggle is disabled.');
             }
         } catch (mailOrSettingError) {
             console.error("Owner alert email failed:", mailOrSettingError);

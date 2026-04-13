@@ -41,9 +41,7 @@ export async function updateSession(request: NextRequest) {
     // PROTECTED ROUTE LOGIC
     // 1. Check for /admin routes
     if (isAdminRoute) {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        console.log("Middleware: Checking /admin route. Path:", pathname);
-        console.log("Middleware: User found?", !!user, "ID:", user?.id);
+        const { data: { user } } = await supabase.auth.getUser();
 
         // Allow access to login page without auth
         if (pathname === '/admin/login') {
@@ -56,7 +54,6 @@ export async function updateSession(request: NextRequest) {
 
         // If not logged in, redirect to admin login
         if (!user) {
-            console.log("Middleware: No user, redirecting to login");
             const url = request.nextUrl.clone();
             url.pathname = '/admin/login';
             return NextResponse.redirect(url);
@@ -65,17 +62,14 @@ export async function updateSession(request: NextRequest) {
         // If logged in, verify admin status
         // We use the secure function or direct query. 
         // Direct query to admin_users is fine if policies allow select for self (which they do via is_admin function now)
-        const { data: adminUser, error: adminError } = await supabase
+        const { data: adminUser } = await supabase
             .from('admin_users')
             .select('role')
             .eq('user_id', user.id)
             .eq('is_active', true)
             .single();
 
-        console.log("Middleware: Admin check result:", adminUser, "Error:", adminError);
-
         if (!adminUser) {
-            console.log("Middleware: Not an admin, redirecting to home");
             const url = request.nextUrl.clone();
             url.pathname = '/';
             return NextResponse.redirect(url);

@@ -26,8 +26,9 @@ export default function ForgotPassword() {
             if (error) throw error;
 
             setMessage("Check your email for the password reset link.");
-        } catch (err: any) {
-            setError(err.message || "Failed to send reset email.");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Failed to send reset email.";
+            setError(message);
         } finally {
             setLoading(false);
         }
@@ -38,7 +39,7 @@ export default function ForgotPassword() {
             <div className={styles.card}>
                 <h1 className={styles.title}>Forgot Password?</h1>
                 <p className={styles.subtitle}>
-                    Enter your email address and we'll send you a link to reset your password.
+                    Enter your email address and we&apos;ll send you a link to reset your password.
                 </p>
 
                 {message && <div className={styles.successMessage}>{message}</div>}

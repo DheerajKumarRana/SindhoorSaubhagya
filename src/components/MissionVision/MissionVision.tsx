@@ -1,8 +1,7 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
-import { Heart, Award } from 'lucide-react'; // Using Lucide icons as placeholders/fallbacks
+import { Heart, Award } from 'lucide-react';
 import styles from './MissionVision.module.css';
 
 const MissionVision = () => {
@@ -28,7 +27,7 @@ const MissionVision = () => {
                     </div>
                     <h3 className={styles.title}>Our Vision</h3>
                     <p className={styles.text}>
-                        To become one of India's most trusted matrimonial platforms, where relationships
+                        To become one of India&apos;s most trusted matrimonial platforms, where relationships
                         are built on honesty, compatibility, and long-term commitment.
                     </p>
                 </div>

@@ -56,7 +56,9 @@ const Testimonials = () => {
                         {marqueeData.map((item, index) => (
                             <div key={`row1-${index}`} className={styles.card}>
                                 <div className={styles.stars}>*****</div>
-                                <p className={styles.quote}>"{item.text}"</p>
+                                <p className={styles.quote}>
+                                    <span aria-hidden="true">&ldquo;</span>{item.text}<span aria-hidden="true">&rdquo;</span>
+                                </p>
                                 <div className={styles.author}>
                                     <Image
                                         src={item.image}
@@ -80,7 +82,9 @@ const Testimonials = () => {
                         {marqueeData.map((item, index) => (
                             <div key={`row2-${index}`} className={styles.card}>
                                 <div className={styles.stars}>*****</div>
-                                <p className={styles.quote}>"{item.text}"</p>
+                                <p className={styles.quote}>
+                                    <span aria-hidden="true">&ldquo;</span>{item.text}<span aria-hidden="true">&rdquo;</span>
+                                </p>
                                 <div className={styles.author}>
                                     <Image
                                         src={item.image}

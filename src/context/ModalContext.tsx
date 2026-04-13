@@ -7,17 +7,23 @@ interface ModalContextType {
     isSignUpOpen: boolean;
     openLogin: () => void;
     closeLogin: () => void;
-    openSignUp: (initialData?: any) => void;
+    openSignUp: (initialData?: unknown) => void;
     closeSignUp: () => void;
-    signUpInitialData: any;
+    signUpInitialData: SignUpInitialData;
 }
+
+type SignUpInitialData = {
+    email?: string;
+    password?: string;
+    profileFor?: string;
+} | undefined;
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-    const [signUpInitialData, setSignUpInitialData] = useState<any>(null);
+    const [signUpInitialData, setSignUpInitialData] = useState<SignUpInitialData>(undefined);
 
     const openLogin = () => {
         setIsSignUpOpen(false);
@@ -28,15 +34,22 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         setIsLoginOpen(false);
     };
 
-    const openSignUp = (initialData: any = null) => {
-        setSignUpInitialData(initialData);
+    const openSignUp = (initialData?: unknown) => {
+        const nextInitialData =
+            initialData &&
+            typeof initialData === 'object' &&
+            ('email' in initialData || 'password' in initialData || 'profileFor' in initialData)
+                ? (initialData as SignUpInitialData)
+                : undefined;
+
+        setSignUpInitialData(nextInitialData);
         setIsLoginOpen(false);
         setIsSignUpOpen(true);
     };
 
     const closeSignUp = () => {
         setIsSignUpOpen(false);
-        setSignUpInitialData(null);
+        setSignUpInitialData(undefined);
     };
 
     return (

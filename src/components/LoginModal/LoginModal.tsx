@@ -110,7 +110,7 @@ const LoginModal = ({ isOpen, onClose, onSignUpClick }: LoginModalProps) => {
                 <div className={styles.formContainer}>
                     <h2 className={styles.welcomeTitle}>Welcome Back!</h2>
                     <p className={styles.subtitleRow}>
-                        Don't have an account? <span className={styles.signupLink} onClick={onSignUpClick}>Sign up</span>
+                        Don&apos;t have an account? <span className={styles.signupLink} onClick={onSignUpClick}>Sign up</span>
                     </p>
 
                     <form onSubmit={handleLogin}>

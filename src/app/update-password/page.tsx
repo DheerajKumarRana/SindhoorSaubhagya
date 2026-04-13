@@ -42,8 +42,9 @@ export default function UpdatePassword() {
             setTimeout(() => {
                 router.push('/');
             }, 2000);
-        } catch (err: any) {
-            setError(err.message || "Failed to update password");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Failed to update password";
+            setError(message);
         } finally {
             setLoading(false);
         }

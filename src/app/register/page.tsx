@@ -472,7 +472,7 @@ const RegisterPage = () => {
                                 <input type="text" name="occupation" className={styles.input} value={formData.occupation} onChange={handleChange} required />
                             </div>
                             <div className={styles.formGroup}>
-                                <label className={styles.label}>Annual Income (₹)</label>
+                                <label className={styles.label}>Annual Income (INR)</label>
                                 <input type="number" name="income" className={styles.input} value={formData.income} onChange={handleChange} required />
                             </div>
                         </div>
@@ -516,11 +516,11 @@ const RegisterPage = () => {
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label className={styles.label}>Father's Occupation</label>
+                                <label className={styles.label}>Father&apos;s Occupation</label>
                                 <input type="text" name="fatherOcc" className={styles.input} value={formData.fatherOcc} onChange={handleChange} />
                             </div>
                             <div className={styles.formGroup}>
-                                <label className={styles.label}>Mother's Occupation</label>
+                                <label className={styles.label}>Mother&apos;s Occupation</label>
                                 <input type="text" name="motherOcc" className={styles.input} value={formData.motherOcc} onChange={handleChange} />
                             </div>
                             <div className={styles.formGroup}>
@@ -564,3 +564,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
