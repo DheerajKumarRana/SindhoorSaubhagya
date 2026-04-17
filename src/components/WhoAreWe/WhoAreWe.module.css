@@ -38,23 +38,29 @@
 }
 
 .heading {
-    font-size: 4rem;
-    font-weight: 600;
-    line-height: 1.2;
-    color: #E31E24;
-    /* Red color */
-}
-
-.areText {
-    color: #F88D91;
-    /* Lighter pink/red for 'are' */
-    font-weight: 500;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #1a1a1a;
 }
 
 .description {
     font-size: 1.1rem;
     color: #4A4A4A;
     line-height: 1.6;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background: #d9d9d9;
+}
+
+.sectionTitle {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
 }
 
 /* Responsive */
@@ -80,6 +86,10 @@
         text-align: left;
         /* Keep left aligned or center based on pref, user mockup shows left */
     }
+
+    .sectionTitle {
+        font-size: 1.95rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -94,10 +104,14 @@
     }
 
     .heading {
-        font-size: 2.5rem;
+        font-size: 1.7rem;
     }
 
     .description {
         font-size: 0.95rem;
+    }
+
+    .sectionTitle {
+        font-size: 1.55rem;
     }
 }

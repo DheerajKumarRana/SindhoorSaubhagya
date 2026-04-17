@@ -6,11 +6,16 @@ import styles from './ContactFormSection.module.css';
 import { sendToGoogleSheet } from '@/lib/googleSheet';
 
 const ContactFormSection = () => {
+    const officeAddressLine1 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE_1 || 'WZ-58, Gali No.2, Sri Nagar,';
+    const officeAddressLine2 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE_2 || 'Shakurpur, Pitampura,';
+    const officeAddressLine3 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE_3 || 'Delhi 110034';
+    const contactEmail = process.env.NEXT_PUBLIC_BUSINESS_EMAIL || 'info@sindoorsaubhagya.com';
+    const contactPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE || '+91 95600 73511';
+
     const [formData, setFormData] = React.useState({
         fullName: '',
         email: '',
         phone: '',
-        subject: '',
         message: '',
     });
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -40,7 +45,6 @@ const ContactFormSection = () => {
                 fullName: '',
                 email: '',
                 phone: '',
-                subject: '',
                 message: '',
             });
         } catch (error) {
@@ -102,22 +106,6 @@ const ContactFormSection = () => {
                             />
                         </div>
                         <div className={styles.formGroup}>
-                            <label className={styles.label}>What Is This About?</label>
-                            <select
-                                className={styles.select}
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="" disabled>Select a subject</option>
-                                <option value="general-question">General Question</option>
-                                <option value="technical-help">Technical Help</option>
-                                <option value="membership-billing">Membership and Billing</option>
-                                <option value="share-feedback">Share Feedback</option>
-                            </select>
-                        </div>
-                        <div className={styles.formGroup}>
                             <label className={styles.label}>Write Your Message Here</label>
                             <textarea
                                 name="message"
@@ -130,7 +118,7 @@ const ContactFormSection = () => {
                         </div>
 
                         <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : 'Submit My Message'}
+                            {isSubmitting ? 'Submitting...' : 'Submit'}
                         </button>
                         {submitMessage && (
                             <p style={{ marginTop: '12px', fontSize: '14px', color: '#333' }}>{submitMessage}</p>
@@ -149,8 +137,9 @@ const ContactFormSection = () => {
                         </div>
                         <div className={styles.infoContent}>
                             <h4>Visit Our Office</h4>
-                            <p>123 Matrimony Plaza, Connaught Place</p>
-                            <p>New Delhi - 110001, India</p>
+                            <p>{officeAddressLine1}</p>
+                            <p>{officeAddressLine2}</p>
+                            <p>{officeAddressLine3}</p>
                         </div>
                     </div>
 
@@ -161,8 +150,7 @@ const ContactFormSection = () => {
                         </div>
                         <div className={styles.infoContent}>
                             <h4>Write to Us</h4>
-                            <a href="mailto:support@matrimony.com">support@matrimony.com</a>
-                            <a href="mailto:care@matrimony.com">care@matrimony.com</a>
+                            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
                         </div>
                     </div>
 
@@ -173,8 +161,7 @@ const ContactFormSection = () => {
                         </div>
                         <div className={styles.infoContent}>
                             <h4>Give Us a Call</h4>
-                            <p>+91 98765 43210</p>
-                            <p>+91 98765 43211</p>
+                            <p>{contactPhone}</p>
                         </div>
                     </div>
 

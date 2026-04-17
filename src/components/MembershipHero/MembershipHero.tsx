@@ -92,11 +92,15 @@ const MembershipHero = () => {
                     </div>
 
                     <h1 className={styles.heading}>
-                        The <strong>largest</strong> and most <strong>successful</strong><br />
-                        matchmaking service <strong>for Elite</strong>
+                        A more personal way to find the right partner
                     </h1>
 
-                    <p className={styles.subHeading}>Share your details, we will get in touch</p>
+                    <p className={styles.subHeading}>
+                        For those who value compatibility, privacy, and a thoughtful approach to matchmaking.
+                    </p>
+                    <p className={styles.subHeading}>
+                        Share your details. Our team will get in touch.
+                    </p>
 
                     <form
                         className={styles.formContainer}
@@ -168,6 +172,7 @@ const MembershipHero = () => {
                     {submitMessage && (
                         <p className={styles.submitMessage} aria-live="polite">{submitMessage}</p>
                     )}
+                    <p className={styles.footerNote}>Private. Thoughtful. Focused.</p>
                 </div>
 
                 <div className={styles.imageCol}>

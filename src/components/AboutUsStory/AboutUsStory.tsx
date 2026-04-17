@@ -41,7 +41,7 @@ const AboutUsStory = () => {
                         <Image src="/start icon.png" alt="Rating" width={45} height={45} />
                     </div>
                     <div className={styles.cardContent}>
-                        <h3>4.5 Rating</h3>
+                            <h3>4.9 Rating</h3>
                         <p>Rated among the top by our satisfied users.</p>
                     </div>
                 </div>
@@ -52,7 +52,7 @@ const AboutUsStory = () => {
                         <Image src="/check icon.png" alt="Years" width={45} height={45} />
                     </div>
                     <div className={styles.cardContent}>
-                        <h3>12+ yrs</h3>
+                            <h3>10+ Years</h3>
                         <p>Decades of insight. A legacy of excellence.</p>
                     </div>
                 </div>
@@ -63,7 +63,7 @@ const AboutUsStory = () => {
                         <Image src="/check icon.png" alt="Profiles" width={45} height={45} />
                     </div>
                     <div className={styles.cardContent}>
-                        <h3>1.2k+ profiles</h3>
+                            <h3>500+ Profiles</h3>
                         <p>Decades of insight. A legacy of excellence.</p>
                     </div>
                 </div>

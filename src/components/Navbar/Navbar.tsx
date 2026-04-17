@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { X, User } from 'lucide-react';
@@ -13,11 +13,7 @@ const Navbar = () => {
     const { openLogin } = useModal();
     const { session, user, profile, profileChecked } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isStickyOnHome, setIsStickyOnHome] = useState(false);
-    const [navbarHeight, setNavbarHeight] = useState(0);
-    const navRef = useRef<HTMLElement | null>(null);
     const pathname = usePathname();
-    const isHomePage = pathname === '/';
     const isAuthenticated = Boolean((session?.user || user) && (!profileChecked || profile?.id));
 
     const toggleMobileMenu = () => {
@@ -32,27 +28,6 @@ const Navbar = () => {
             document.body.style.overflow = previousOverflow;
         };
     }, [isMobileMenuOpen]);
-
-    useEffect(() => {
-        if (!isHomePage) return;
-
-        const onScroll = () => {
-            setIsStickyOnHome(window.scrollY > 40);
-        };
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        return () => window.removeEventListener('scroll', onScroll);
-    }, [isHomePage]);
-
-    useEffect(() => {
-        const updateHeight = () => {
-            setNavbarHeight(navRef.current?.offsetHeight || 0);
-        };
-
-        updateHeight();
-        window.addEventListener('resize', updateHeight);
-        return () => window.removeEventListener('resize', updateHeight);
-    }, [isStickyOnHome]);
 
     // Hide Navbar on Admin and Dashboard pages
     if (pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard')) {
@@ -101,13 +76,7 @@ const Navbar = () => {
 
     return (
         <>
-            {isHomePage && isStickyOnHome && navbarHeight > 0 && (
-                <div style={{ height: `${navbarHeight}px` }} aria-hidden="true" />
-            )}
-            <nav
-                ref={navRef}
-                className={`${styles.navbarContainer} ${isHomePage && isStickyOnHome ? styles.navbarStickyHome : ''}`}
-            >
+            <nav className={styles.navbarContainer}>
                 <div className={styles.topBar}>
                     <div className={styles.topBarTrack}>
                         {renderMarqueeLine('a')}

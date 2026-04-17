@@ -12,7 +12,7 @@ const ContactHero = () => {
                 <div className={styles.contentSide}>
                     <h1 className={styles.title}>Get in Touch</h1>
                     <p className={styles.subtitle}>
-                        No automated replies, no endless wait times. When you reach out to Sindoor Saubhagya you speak to a real person who understands what this search means to you and is genuinely here to help.
+                        When you reach out to Sindoor Saubhagaya, you connect with a real person who understands how important this journey is and is here to help you with care.
                     </p>
                 </div>
 

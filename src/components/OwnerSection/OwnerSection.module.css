@@ -142,8 +142,9 @@
 
 .signature {
     display: flex;
-    gap: 0.75rem;
-    align-items: center;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: flex-start;
     padding-top: 0.75rem;
     margin-top: 0.2rem;
     border-top: 1px dashed #ffd2d2;

@@ -3,7 +3,6 @@ import React from 'react';
 import Image from 'next/image';
 import styles from './Footer.module.css';
 import Link from 'next/link';
-import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 const GALLERY_IMAGES: Array<{ src: string; size: 'big' | 'small' }> = [
     { src: '/footer-crouser-image-bigcard1.png', size: 'big' },
@@ -26,7 +25,10 @@ const Footer = ({
     topBarButtonText = "Register Free",
     topBarButtonHref = "/register",
 }: FooterProps) => {
-    const businessAddress = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS || '123 Matrimony Plaza, Connaught Place, New Delhi - 110001, India';
+    const businessAddress =
+        process.env.NEXT_PUBLIC_BUSINESS_ADDRESS || 'WZ-58, Gali No.2, Sri Nagar, Shakurpur, Pitampura, Delhi 110034';
+    const businessEmail = process.env.NEXT_PUBLIC_BUSINESS_EMAIL || 'info@sindoorsaubhagya.com';
+    const businessPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE || '+91 95600 73511';
 
     return (
         <footer className={styles.footer}>
@@ -84,6 +86,12 @@ const Footer = ({
 
                         <div className={styles.address}>
                             <p>Address: {businessAddress}</p>
+                            <p>
+                                Email: <a href={`mailto:${businessEmail}`}>{businessEmail}</a>
+                            </p>
+                            <p>
+                                Phone: <a href={`tel:${businessPhone.replace(/\s+/g, '')}`}>{businessPhone}</a>
+                            </p>
                         </div>
                     </div>
 
@@ -95,12 +103,6 @@ const Footer = ({
                             <Link href="/profile" className={styles.link}>View Profile</Link>
                         </nav>
 
-                        <div className={styles.socialIcons}>
-                            <a href="https://twitter.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Twitter size={18} /></a>
-                            <a href="https://facebook.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Facebook size={18} /></a>
-                            <a href="https://instagram.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Instagram size={18} /></a>
-                            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className={styles.iconBtn}><Linkedin size={18} /></a>
-                        </div>
                     </div>
                 </div>
             </div>

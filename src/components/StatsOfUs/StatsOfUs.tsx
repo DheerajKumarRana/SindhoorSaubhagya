@@ -59,7 +59,7 @@ const StatsOfUs = () => {
             const duration = 3200;
             const ratingTarget = 4.9;
             const yearsTarget = 8;
-            const profilesTarget = 500000;
+            const profilesTarget = 100;
             const start = performance.now();
 
             const tick = (now: number) => {
@@ -98,15 +98,7 @@ const StatsOfUs = () => {
         return () => observer.disconnect();
     }, []);
 
-    const formatProfilesCount = (value: number) => {
-        if (value <= 0) return '0';
-        if (value < 100000) return `${value}`;
-        const lakhValue = value / 100000;
-        const formatted = Number.isInteger(lakhValue)
-            ? `${lakhValue}`
-            : lakhValue.toFixed(1).replace(/\.0$/, '');
-        return `${formatted} Lakh`;
-    };
+    const formatProfilesCount = (value: number) => `${Math.max(0, value)}`;
 
     // Helper to determine class based on relative position
     // Since we only have 3, logic is simple:

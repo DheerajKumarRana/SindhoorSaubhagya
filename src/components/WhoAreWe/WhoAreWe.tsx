@@ -20,11 +20,20 @@ const WhoAreWe = () => {
 
                 {/* Right Side - Content */}
                 <div className={styles.content}>
-                    <h2 className={styles.heading}>
-                        WHO <span className={styles.areText}>are</span> We?
-                    </h2>
+                    <h2 className={styles.heading}>Built around something meaningful</h2>
                     <p className={styles.description}>
-                        We are a modern matrimonial platform designed to help individuals and families find genuine, compatible life partners. By blending traditional values with modern technology, we focus on verified profiles, privacy-first systems, and respectful matchmaking to create meaningful and lasting connections.
+                        At Sindoor Saubhagaya, we believe marriage is not just about finding someone - it&apos;s about finding the right person to share your life with.
+                    </p>
+                    <p className={styles.description}>
+                        In our culture, Sindoor is more than a tradition. It represents commitment, respect, and a lifelong bond.
+                    </p>
+                    <p className={styles.description}>That belief is at the heart of everything we do.</p>
+
+                    <div className={styles.divider} />
+
+                    <h3 className={styles.sectionTitle}>WHO WE ARE</h3>
+                    <p className={styles.description}>
+                        Sindoor Saubhagaya is a matrimonial platform created for individuals and families who are serious about marriage. We focus on keeping the process simple, respectful, and genuine so you can concentrate on what truly matters: building a meaningful connection. No distractions. No unnecessary complexity. Just a space where real intentions meet.
                     </p>
                 </div>
             </div>
